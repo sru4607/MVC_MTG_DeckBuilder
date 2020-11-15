@@ -1,5 +1,6 @@
 "use strict";
 
+//Processes Login
 var handleLogin = function handleLogin(e) {
   e.preventDefault();
   $(".messageBox").animate({
@@ -14,7 +15,8 @@ var handleLogin = function handleLogin(e) {
   console.log($("input[name=_csrf]").val());
   sendAjax('POST', $("#loginForm").attr("action"), $("#loginForm").serialize(), redirect);
   return false;
-};
+}; //Processes Signup
+
 
 var handleSignup = function handleSignup(e) {
   e.preventDefault();
@@ -35,7 +37,8 @@ var handleSignup = function handleSignup(e) {
   console.log($("input[name=_csrf]").val());
   sendAjax('POST', $("#signupForm").attr("action"), $("#signupForm").serialize(), redirect);
   return false;
-};
+}; //JSX for Login
+
 
 var LoginWindow = function LoginWindow(props) {
   return /*#__PURE__*/React.createElement("form", {
@@ -45,16 +48,12 @@ var LoginWindow = function LoginWindow(props) {
     action: "/login",
     method: "POST",
     className: "mainForm"
-  }, /*#__PURE__*/React.createElement("label", {
-    htmlFor: "username"
-  }, "Username: "), /*#__PURE__*/React.createElement("input", {
+  }, /*#__PURE__*/React.createElement("input", {
     id: "user",
     type: "text",
     name: "username",
     placeholder: "username"
-  }), /*#__PURE__*/React.createElement("label", {
-    htmlFor: "pass"
-  }, "Password: "), /*#__PURE__*/React.createElement("input", {
+  }), /*#__PURE__*/React.createElement("input", {
     id: "pass",
     type: "password",
     name: "pass",
@@ -64,11 +63,12 @@ var LoginWindow = function LoginWindow(props) {
     name: "_csrf",
     value: props.csrf
   }), /*#__PURE__*/React.createElement("input", {
-    className: "formSubmit",
+    className: "formSubmit accountButton",
     type: "submit",
     value: "Sign in"
   }));
-};
+}; //JSX for Signup
+
 
 var SignupWindow = function SignupWindow(props) {
   return /*#__PURE__*/React.createElement("form", {
@@ -78,23 +78,17 @@ var SignupWindow = function SignupWindow(props) {
     action: "/signup",
     method: "POST",
     className: "mainForm"
-  }, /*#__PURE__*/React.createElement("label", {
-    htmlFor: "username"
-  }, "Username: "), /*#__PURE__*/React.createElement("input", {
+  }, /*#__PURE__*/React.createElement("input", {
     id: "user",
     type: "text",
     name: "username",
     placeholder: "username"
-  }), /*#__PURE__*/React.createElement("label", {
-    htmlFor: "pass"
-  }, "Password: "), /*#__PURE__*/React.createElement("input", {
+  }), /*#__PURE__*/React.createElement("input", {
     id: "pass",
     type: "password",
     name: "pass",
     placeholder: "password"
-  }), /*#__PURE__*/React.createElement("label", {
-    htmlFor: "pass2"
-  }, "Password: "), /*#__PURE__*/React.createElement("input", {
+  }), /*#__PURE__*/React.createElement("input", {
     id: "pass2",
     type: "password",
     name: "pass2",
@@ -104,23 +98,26 @@ var SignupWindow = function SignupWindow(props) {
     name: "_csrf",
     value: props.csrf
   }), /*#__PURE__*/React.createElement("input", {
-    className: "formSubmit",
+    className: "formSubmit accountButton",
     type: "submit",
     value: "Sign Up"
   }));
-};
+}; //Renders Login
+
 
 var createLoginWindow = function createLoginWindow(csrf) {
   ReactDOM.render( /*#__PURE__*/React.createElement(LoginWindow, {
     csrf: csrf
   }), document.querySelector("#content"));
-};
+}; //Renders Signup
+
 
 var createSignupWindow = function createSignupWindow(csrf) {
   ReactDOM.render( /*#__PURE__*/React.createElement(SignupWindow, {
     csrf: csrf
   }), document.querySelector("#content"));
-};
+}; //Passes CSRF 
+
 
 var setup = function setup(csrf) {
   var loginButton = document.querySelector("#loginButton");
@@ -136,7 +133,8 @@ var setup = function setup(csrf) {
     return false;
   });
   createLoginWindow(csrf); //Default view
-};
+}; //Gets CSRF
+
 
 var getToken = function getToken() {
   sendAjax('GET', '/getToken', null, function (result) {
@@ -149,6 +147,7 @@ $(document).ready(function () {
 });
 "use strict";
 
+//Handles Errors in a general display
 var handleError = function handleError(message) {
   $(".messageText").text(message);
   $(".messageBox").animate({
@@ -156,7 +155,8 @@ var handleError = function handleError(message) {
   }, 100).delay(2500).animate({
     opacity: 0
   }, 1000);
-};
+}; //Handle Success (WIP)
+
 
 var handleSuccess = function handleSuccess(message) {
   $(".messageText").text(message);
@@ -165,14 +165,16 @@ var handleSuccess = function handleSuccess(message) {
   }, 100).delay(2500).animate({
     opacity: 0
   }, 1000);
-};
+}; //Redirect function with json response
+
 
 var redirect = function redirect(response) {
   $(".messageBox").animate({
     opacity: '0'
   }, 350);
   window.location = response.redirect;
-};
+}; //AJAX method
+
 
 var sendAjax = function sendAjax(type, action, data, success) {
   $.ajax({

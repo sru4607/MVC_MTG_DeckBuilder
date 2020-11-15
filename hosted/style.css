@@ -50,28 +50,6 @@ nav:nth-child(1) {
     transition: background-color 0.8s ease;
     background-color: #778DA9;
 }
-
-
-.mainForm {
-    height: 300px;
-    width: 350px;
-    margin: 0 auto;
-    padding-top: 350px;
-    font-size: 1.2em;
-}
-
-.mainForm h3 {
-    text-align: center;
-}
-
-.mainForm label {
-    display: inline-block;
-    width: 100px;
-    margin-right: 10px;
-    text-align: right;
-    font-size: 1.1em;
-}
-
 .formSubmit {
     transition: background-color 0.4s ease;
     display: block;
@@ -211,6 +189,16 @@ form{
     font-weight: bold;
     color: white;
 }
+[type|="password"]{
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgb(255,255,255,0.2);
+    display: flex;
+    height:30px;
+    width: 100%;
+    box-sizing: border-box;
+    font-weight: bold;
+    color: black;
+}
 input:-webkit-autofill {
     font-weight: bold;
     -webkit-text-fill-color: white;
@@ -287,4 +275,41 @@ button{
   ::-webkit-scrollbar-thumb:hover {
     background: #555;
   }
+
+  #user{
+      width: 100%;
+      display: block;
+  }
+
+  #pass, #pass2{
+      width: 100%;
+      margin-top: 5px;
+      display: block;
+  }
+  .accountButton{
+      text-align: center;
+      background-color: gray;
+      color: whitesmoke;
+      border: 0px;
+      display: inline-block;
+      height:30px;
+      box-sizing: border-box;
+      border-radius: 10px;
+      width: 100%;
+  }
+
+  .mainForm{
+      
+      display: block;
+      width: 20%;
+      height: 125px;
+      margin: auto;
+  }
+
+  .verticalCenter{
+      display: flex;
+      align-items: center;
+      height: 100%;
+  }
+  
 
