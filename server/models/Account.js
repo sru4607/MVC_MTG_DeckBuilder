@@ -1,5 +1,9 @@
 const crypto = require('crypto');
 const mongoose = require('mongoose');
+const { Account } = require('.');
+
+// converts string ID to real mongo ID
+const convertId = mongoose.Types.ObjectId;
 
 mongoose.Promise = global.Promise;
 
@@ -83,6 +87,23 @@ AccountSchema.statics.authenticate = (username, password, callback) => {
       return callback();
     });
   });
+};
+
+
+AccountSchema.statics.findOneByOwner = (ownerId, callback) => {
+  const search = {
+    _id: convertId(ownerId),
+  };
+  return AccountModel.findOne(search).select('username premium').lean().exec(callback);
+};
+
+
+AccountSchema.statics.findOneByOwnerAndUpdate = (ownerId, toUpdateTo, callback) => {
+  const search = {
+    _id: convertId(ownerId),
+  };
+
+  AccountModel.findOneAndUpdate(search, toUpdateTo, {isNew: true}, callback);
 };
 
 AccountModel = mongoose.model('Account', AccountSchema);

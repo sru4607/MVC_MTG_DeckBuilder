@@ -2,16 +2,19 @@ const models = require('../models');
 
 const { Account } = models;
 
+//Login page
 const loginPage = (req, res) => {
   const token = req.csrfToken();
   res.render('login', { csrfToken: token });
 };
 
+//Logout processing
 const logout = (req, res) => {
   req.session.destroy();
   res.redirect('/');
 };
 
+//Login Processing
 const login = (request, response) => {
   const req = request;
   const res = response;
@@ -35,6 +38,7 @@ const login = (request, response) => {
   });
 };
 
+//Signup processing
 const signup = (request, response) => {
   const req = request;
   const res = response;
@@ -82,12 +86,29 @@ const signup = (request, response) => {
   });
 };
 
-const togglePremium = (request, response) => {
-  const req = request;
-  const res = response;
-  console.log("To Implement: Premium");
+const accountPage = (req, res) => res.render('account');
+
+//Toggles the premium based on owner
+const togglePremium = (req, res) => {
+  let premiumToSet = false;
+  Account.AccountModel.findOneByOwner(req.session.account._id,(err, docs)=>{
+    console.log(docs);
+    premiumToSet = !docs.premium;
+
+    const replace = {
+      premium: premiumToSet
+    };
+
+    Account.AccountModel.findOneByOwnerAndUpdate(req.session.account._id,replace, (err, docs)=>{
+      return res.json({new_Premium: docs.premium});
+    });
+  });
+
+
+
 };
 
+//CSRF 
 const getToken = (request, response) => {
   const req = request;
   const res = response;
@@ -99,8 +120,18 @@ const getToken = (request, response) => {
   res.json(csrfJSON);
 };
 
+//Get the model based on id
+const getAccountInfo = (req, res) => {
+  Account.AccountModel.findOneByOwner(req.session.account._id, (err, docs)=>{
+    return res.json(docs);
+  });
+};
+
 module.exports.loginPage = loginPage;
+module.exports.accountPage = accountPage;
 module.exports.logout = logout;
 module.exports.login = login;
 module.exports.signup = signup;
+module.exports.getAccountInfo = getAccountInfo;
+module.exports.togglePremium = togglePremium;
 module.exports.getToken = getToken;

@@ -1,7 +1,8 @@
+//Processes Login
 const handleLogin = (e) => {
     e.preventDefault();
 
-    $("#messageBox").animate({opacity:0},350);
+    $(".messageBox").animate({opacity:0},350);
 
     if($("#user").val() == '' || $("#pass").val() == ''){
         handleError("Username and Password Required");
@@ -14,11 +15,11 @@ const handleLogin = (e) => {
 
     return false;
 };
-
+//Processes Signup
 const handleSignup = (e) => {
     e.preventDefault();
 
-    $("#messageBox").animate({opacity:0},350);
+    $(".messageBox").animate({opacity:0},350);
 
     if($("#user").val() == '' || $("#pass").val() == '' || $("#pass2").val() == ''){
         handleError("All fields are required");
@@ -36,7 +37,7 @@ const handleSignup = (e) => {
 
     return false;
 };
-
+//JSX for Login
 const LoginWindow = (props) => {
     return (
     <form id="loginForm" name="loginForm"
@@ -54,7 +55,7 @@ const LoginWindow = (props) => {
     </form>
     );
 };
-
+//JSX for Signup
 const SignupWindow = (props) => {
     return (
     <form id="signupForm"
@@ -75,21 +76,21 @@ const SignupWindow = (props) => {
     </form>
     );
 };
-
+//Renders Login
 const createLoginWindow = (csrf) => {
     ReactDOM.render(
         <LoginWindow csrf={csrf} />,
         document.querySelector("#content")
     );
 };
-
+//Renders Signup
 const createSignupWindow = (csrf) => {
     ReactDOM.render(
         <SignupWindow csrf={csrf} />,
         document.querySelector("#content")
     );
 };
-
+//Passes CSRF 
 const setup = (csrf) => {
     const loginButton = document.querySelector("#loginButton");
     const signupButton = document.querySelector("#signupButton");
@@ -108,7 +109,7 @@ const setup = (csrf) => {
 
     createLoginWindow(csrf); //Default view
 };
-
+//Gets CSRF
 const getToken = () => {
     sendAjax('GET', '/getToken', null, (result)=>{
         setup(result.csrfToken);

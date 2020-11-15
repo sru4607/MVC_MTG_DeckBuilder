@@ -2,7 +2,7 @@
 
 var handleLogin = function handleLogin(e) {
   e.preventDefault();
-  $("#messageBox").animate({
+  $(".messageBox").animate({
     opacity: 0
   }, 350);
 
@@ -18,7 +18,7 @@ var handleLogin = function handleLogin(e) {
 
 var handleSignup = function handleSignup(e) {
   e.preventDefault();
-  $("#messageBox").animate({
+  $(".messageBox").animate({
     opacity: 0
   }, 350);
 
@@ -150,8 +150,17 @@ $(document).ready(function () {
 "use strict";
 
 var handleError = function handleError(message) {
-  $("#messageText").text(message);
-  $("#messageBox").animate({
+  $(".messageText").text(message);
+  $(".messageBox").animate({
+    opacity: 100
+  }, 100).delay(2500).animate({
+    opacity: 0
+  }, 1000);
+};
+
+var handleSuccess = function handleSuccess(message) {
+  $(".messageText").text(message);
+  $(".messageBox").animate({
     opacity: 100
   }, 100).delay(2500).animate({
     opacity: 0
@@ -159,7 +168,7 @@ var handleError = function handleError(message) {
 };
 
 var redirect = function redirect(response) {
-  $("#messageBox").animate({
+  $(".messageBox").animate({
     opacity: '0'
   }, 350);
   window.location = response.redirect;

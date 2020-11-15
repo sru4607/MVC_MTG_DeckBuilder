@@ -50,6 +50,15 @@ DeckSchema.statics.findByOwner = (ownerId, callback) => {
   return DeckModel.find(search).select('name').lean().exec(callback);
 };
 
+DeckSchema.statics.findOneByOwnerAndName = (ownerId, name, callback) => {
+  const search = {
+    owner: convertId(ownerId),
+    name: name,
+  };
+
+  return DeckModel.findOne(search).select('cards').lean().exec(callback);
+};
+
 DeckSchema.statics.removeByData = (data, callback) => {
   DeckModel.findByIdAndDelete(data.id).exec(callback);
 };

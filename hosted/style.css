@@ -15,6 +15,7 @@ html, body {
     padding-top: 5px;
     float:left;
     border-radius: 8px;
+    padding-left: 10px;
 }
 
 nav {
@@ -108,24 +109,6 @@ nav:nth-child(1) {
     box-shadow: 0px 0px 1px 1px #55acee;
 }
 
-#domoMessage {
-    display:none;
-    top: 250px;
-    width: 250px;
-    height: 650px;
-    position: absolute;
-    z-index: 200;
-    right: 0px;
-    overflow: hidden;
-}
-
-#domoMessage h3 {
-    width: 200px;
-    position: absolute;
-    top: 0px;
-    left: 20px;
-}
-
 #speech {
     height: 120px;
     width: 250px;
@@ -139,91 +122,8 @@ nav:nth-child(1) {
     font-style: italic;
 }
 
-#domo {
-    z-index: 225;
-    margin-top: -20px;
-    margin-left: 135px;
-    height: 450px;
-    width: 300px;
-    -ms-transform: rotate(330deg);
-    -webkit-transform: rotate(330deg); 
-    transform: rotate(330deg);
-}
-
-#domos {
-    width: 40%;
-    min-width: 400px;
-    border: 2px solid #55acee;
-    border-radius: 4px;
-    margin: 0 auto;
-    margin-top: 100px;
-}
-
-.domo {
-    width: 95%;
-    margin: 0 auto;
-    margin-top: 2px;
-    margin-bottom: 2px;
-    border: 2px solid #55acee;
-    border-radius: 4px;
-    background-color: #55acee;
-    padding: 10px;
-    min-height:60px;
-    overflow: hidden;
-}
-
-.domo:hover {
-    transition: border-color 0.2s ease-out;
-    border-color: rgba(255,255,255, 0.8);
-    transition: background-color 2.6s ease-out;
-    background-color: #66bfff;
-}
-
-img.domoFace {
-    margin-left: 25px;
-    margin-right: 10px;
-    height: 50px;
-    width: 50px;
-    border-radius: 4px;
-    margin-top:10px;
-    float:left;
-}
-
-h3.emptyDomo {
-    width: 400px;
-    font-size: 1.5em;
-    margin: 0 auto;
-    text-align: center;
-    margin-top: 18px;
-}
-
-h3.domoName {
-    float:left;
-    width: 200px;
-    font-weight: bold;
-    padding-left: 65px;
-    font-size: 1.5em;
-}
-
-h3.domoAge {
-    float:right;
-    text-align: left;
-    width: 100px;
-    font-weight: bold;
-    padding-right: 40px;
-    font-size: 1.5em;
-}
-
-.domo:first-child {
-    margin-top: 10px;
-}
-
-.domo:last-child {
-    margin-bottom:10px;
-}
-
-
 .messageBox {
+    color: black;
     margin-left: 25%;
     margin-right: 25%;
     width: 50%;
@@ -248,7 +148,143 @@ h3.domoAge {
     background-color: lightgreen;
 }
 
-#errorSymbol {
+.errorSymbol {
     position: absolute;
     left: 15px;
 }
+
+#searchContainer{
+  width: 70%;
+  top: 100px;
+  bottom: 25px;
+  left: 3%;
+  position: fixed;
+  background-color: rgba(128,128,128,0.1);
+  color: whitesmoke;
+  overflow-y: auto;
+  text-align: center;
+}
+
+#search{
+    padding-top: 15px;
+    text-align: center;
+}
+
+#deckContainer{
+    background-color: rgba(128,128,128,0.1);
+    width:20%;
+    overflow-y: auto;
+    top: 100px;
+    bottom: 25px;
+    right: 3%;
+    position: fixed;
+    color: whitesmoke; 
+    box-sizing: content-box;
+    padding: 5px;
+    text-align: center;
+}
+
+#forms{
+    text-align: center;
+    position: relative;
+    background-color: #3a3a3a;
+    box-sizing: border-box;
+    padding: 10px;
+    width: auto;
+}
+form{
+    color: whitesmoke;
+    margin-left: 15%;
+    margin-right: 15%;
+    display: inline-flex;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    width: 70%;
+}
+[type|="text"]{
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgb(255,255,255,0.2);
+    display: flex;
+    height:30px;
+    width: 100%;
+    box-sizing: border-box;
+    font-weight: bold;
+    color: white;
+}
+input:-webkit-autofill {
+    font-weight: bold;
+    -webkit-text-fill-color: white;
+    -webkit-box-shadow: 0 0 0px 1000px rgb(255,255,255,0.1) inset !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+[type|="submit"]{
+    background-color: gray;
+    color: whitesmoke;
+    border: 0px;
+    display: flex;
+    height:30px;
+    box-sizing: border-box;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+label{
+    display: flex;
+    border: 0px;
+    background-color: gray;
+    color: whitesmoke;
+    height:30px;
+    box-sizing: border-box;
+    vertical-align: middle;
+    line-height: 20px;
+    padding: 5px;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+button{
+    background-color: #3a3a3a;
+    color: whitesmoke;
+    border: 0px;
+    height:30px;
+    box-sizing: border-box;
+    border-radius: 10px;
+}
+
+#cardImage{
+    width: 20%;
+}
+
+.cardButton{
+    text-align: center;
+    height: 35px;
+    margin-top: 5px;
+    list-style: none;
+    padding: 5px;
+    line-height: 1.5em;
+    font-weight: bold;
+    display: block;
+    width:100%;
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 15px;
+    bottom: 0px;
+    top: 30px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #888;
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+

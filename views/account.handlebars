@@ -12,18 +12,16 @@
   <link rel="stylesheet" type="text/css" href="/assets/style.css"/>
 </head>
 <body>
-  <nav><a href="/login"><img id="logo" src="/assets/img/face.png" alt="face logo"/></a>
-    <div class="navlink"><a href="/editor">Editor</a></div>
+  <nav><a href="/login"><img id="logo" src="/assets/img/logo.png" alt="main logo"/></a>
     <div class="navlink"><a href="/viewer">Viewer</a></div>
     <div class="navlink"><a href="/logout">Log out</a></div>
   </nav>
-  <section id="makeDomo">
+  <section id="accountInfo">
   </section>
-  <section id="domos">
-  </section>
-  <div id="domoMessage"><img id="speech" src="/assets/img/speech.png" alt="speech box"/>
-    <h3><span id="errorMessage"></span></h3><img id="domo" src="assets/img/domo.png" alt="domo"/>
+  <div  class="messageBox errorMessage">
+    <img class="errorSymbol" src="/assets/img/error.png" alt="error"/>
+    <p class="messageText"></p>
   </div>
-  <script src="/assets/bundle.js"></script>
+  <script src="/assets/accountBundle.js"></script>
 </body>
 </html>

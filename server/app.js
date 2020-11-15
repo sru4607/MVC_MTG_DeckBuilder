@@ -31,6 +31,8 @@ mongoose.connect(dbURL, mongooseOptions, (err) => {
   }
 });
 
+mongoose.set('useFindAndModify', false);
+
 let redisURL = {
   // Replace this with your endpoint url minus the port number at the end
   hostname: 'redis-15286.c44.us-east-1-2.ec2.cloud.redislabs.com',
@@ -69,7 +71,7 @@ app.use(session({
   store: new RedisStore({
     client: redisClient,
   }),
-  secret: 'Domo Arigato',
+  secret: '42 The Answer to the Question',
   resave: true,
   saveUninitialized: true,
   cookie: {

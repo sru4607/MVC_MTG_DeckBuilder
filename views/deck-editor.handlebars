@@ -12,17 +12,29 @@
   <link rel="stylesheet" type="text/css" href="/assets/style.css"/>
 </head>
 <body>
-  <nav><a href="/login"><img id="logo" src="/assets/img/face.png" alt="face logo"/></a>
+  <nav><a href="/login"><img id="logo" src="/assets/img/logo.png" alt="main logo"/></a>
     <div class="navlink"><a href="/viewer">Viewer</a></div>
     <div class="navlink"><a href="/account">Account</a></div>
     <div class="navlink"><a href="/logout">Log out</a></div>
   </nav>
-  <section id="cardSearcher">
+  <section id="searchContainer">
+    <section id="search">
+    </section>
+    <section id="searchResultCard">
+    </section>
+    <section id="searchResultControl">
+    </section>
   </section>
-  <section id="workingDeck">
+  <section id="deckContainer">
+    <section id="save">
+    </section>
+    <section id="workingDeck">
+    </section>
   </section>
-  <div id="messageBox"><img id="speech" src="/assets/img/speech.png" alt="speech box"/>
+  <div  class="messageBox errorMessage">
+    <img class="errorSymbol" src="/assets/img/error.png" alt="error"/>
+    <p class="messageText"></p>
   </div>
-  <script src="/assets/bundle.js"></script>
+  <script src="/assets/editorBundle.js"></script>
 </body>
 </html>
