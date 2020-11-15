@@ -6,19 +6,19 @@ const { Deck } = models;
 
 const editorPage = (req, res) => res.render('deck-editor');
 
-//If creating new deck just open editor
+// If creating new deck just open editor
 const newDeck = (req, res) => res.json({ redirect: '/editor' });
 
-//Edit deck with deck name
+// Edit deck with deck name
 const editDeck = (req, res) => {
-    let url = '/editor';
-    url += '?deckName=';
-    url+=req.body.deckName;
-    url = encodeURI(url);
-    res.json({ redirect: url })
+  let url = '/editor';
+  url += '?deckName=';
+  url += req.body.deckName;
+  url = encodeURI(url);
+  res.json({ redirect: url });
 };
 
-//Get card based on search and generate json
+// Get card based on search and generate json
 const getCard = (req, res) => {
   const url = `https://api.scryfall.com/cards/search?q="${req.query.searchString}"`;
   // Create response callback
@@ -30,13 +30,12 @@ const getCard = (req, res) => {
     });
     // Use completed data and return it
     resScryfall.on('end', () => {
-      let returnedItems = JSON.parse(data);
-      returnedItems = returnedItems;
+      const returnedVal = JSON.parse(data);
       let result = {};
       // If there was any data returned
-      if (returnedItems.data) {
+      if (returnedVal.data) {
         // Use the first search result (May Change Later)
-        returnedItems = returnedItems.data[0];
+        const [returnedItems] = returnedVal.data;
         // Double Sided Cards (Images, Text, Cost)
         if (returnedItems.card_faces) {
           result.faceInfo = [];
@@ -48,9 +47,8 @@ const getCard = (req, res) => {
               face_manaCost: face.mana_cost,
             });
           });
-        }
-        // Single Sided Cards
-        else {
+        } else {
+          // Single Sided Cards
           console.log(returnedItems);
           result.faceInfo = [{
             face_name: returnedItems.name,
@@ -80,7 +78,7 @@ const getCard = (req, res) => {
 };
 
 
-//Either update or create new entry based on name and owner
+// Either update or create new entry based on name and owner
 const saveDeck = (req, res) => {
   const deckModelToSave = {
     name: req.body.saveString,
@@ -112,16 +110,14 @@ const saveDeck = (req, res) => {
   return deckPromise;
 };
 
-//Load deck based on owner and name
+// Load deck based on owner and name
 const loadDeck = (req, res) => {
-    Deck.DeckModel.findOneByOwnerAndName(req.session.account._id, req.query.deckName, (err, docs) => {
-        if(err){
-            return res.json({message: 'Error Saving'});
-        }
-        console.log(docs);
-        res.json({deck: docs});
-    })
-
+  Deck.DeckModel.findOneByOwnerAndName(req.session.account._id, req.query.deckName, (err, docs) => {
+    if (err) {
+      return res.json({ message: 'Error Saving' });
+    }
+    return res.json({ deck: docs });
+  });
 };
 
 module.exports.editorPage = editorPage;

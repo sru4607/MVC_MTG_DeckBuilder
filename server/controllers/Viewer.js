@@ -2,7 +2,7 @@ const models = require('../models');
 
 const { Deck } = models;
 
-//load viewer page
+// load viewer page
 const viewerPage = (req, res) => {
   Deck.DeckModel.findByOwner(req.session.account._id, (err, docs) => {
     if (err) {
@@ -10,7 +10,7 @@ const viewerPage = (req, res) => {
       return res.status(400).json({ error: 'An error occured' });
     }
     const token = req.csrfToken();
-    return res.render('deck-viewer', { decks: docs });
+    return res.render('deck-viewer', { decks: docs, csrf: token });
   });
 };
 

@@ -53,7 +53,7 @@ DeckSchema.statics.findByOwner = (ownerId, callback) => {
 DeckSchema.statics.findOneByOwnerAndName = (ownerId, name, callback) => {
   const search = {
     owner: convertId(ownerId),
-    name: name,
+    name,
   };
 
   return DeckModel.findOne(search).select('cards').lean().exec(callback);

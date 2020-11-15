@@ -1,6 +1,5 @@
 const crypto = require('crypto');
 const mongoose = require('mongoose');
-const { Account } = require('.');
 
 // converts string ID to real mongo ID
 const convertId = mongoose.Types.ObjectId;
@@ -103,7 +102,7 @@ AccountSchema.statics.findOneByOwnerAndUpdate = (ownerId, toUpdateTo, callback) 
     _id: convertId(ownerId),
   };
 
-  AccountModel.findOneAndUpdate(search, toUpdateTo, {isNew: true}, callback);
+  AccountModel.findOneAndUpdate(search, toUpdateTo, { isNew: true }, callback);
 };
 
 AccountModel = mongoose.model('Account', AccountSchema);

@@ -15,7 +15,7 @@ const router = (app) => {
   app.post('/editDeck', mid.requiresLogin, controllers.Editor.editDeck);
   app.post('/saveDeck', mid.requiresLogin, controllers.Editor.saveDeck);
   app.get('/searchCard', mid.requiresLogin, controllers.Editor.getCard);
-  app.get('/loadDeck',mid.requiresLogin, controllers.Editor.loadDeck);
+  app.get('/loadDeck', mid.requiresLogin, controllers.Editor.loadDeck);
   app.get('/getAccountInfo', mid.requiresLogin, controllers.Account.getAccountInfo);
   app.post('/togglePremium', mid.requiresLogin, controllers.Account.togglePremium);
   app.get('/', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);

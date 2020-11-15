@@ -4,7 +4,7 @@ const requiresLogin = (req, res, next) => {
   }
   return next();
 };
-//By Default if you try to go to a login or signup page but are logged in go to list of decks
+// By Default if you try to go to a login or signup page but are logged in go to list of decks
 const requiresLogout = (req, res, next) => {
   if (req.session.account) {
     return res.redirect('/viewer');

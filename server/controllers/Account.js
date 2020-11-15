@@ -2,19 +2,19 @@ const models = require('../models');
 
 const { Account } = models;
 
-//Login page
+// Login page
 const loginPage = (req, res) => {
   const token = req.csrfToken();
   res.render('login', { csrfToken: token });
 };
 
-//Logout processing
+// Logout processing
 const logout = (req, res) => {
   req.session.destroy();
   res.redirect('/');
 };
 
-//Login Processing
+// Login Processing
 const login = (request, response) => {
   const req = request;
   const res = response;
@@ -38,7 +38,7 @@ const login = (request, response) => {
   });
 };
 
-//Signup processing
+// Signup processing
 const signup = (request, response) => {
   const req = request;
   const res = response;
@@ -88,27 +88,26 @@ const signup = (request, response) => {
 
 const accountPage = (req, res) => res.render('account');
 
-//Toggles the premium based on owner
+// Toggles the premium based on owner
 const togglePremium = (req, res) => {
   let premiumToSet = false;
-  Account.AccountModel.findOneByOwner(req.session.account._id,(err, docs)=>{
+  Account.AccountModel.findOneByOwner(req.session.account._id, (err, docs) => {
     console.log(docs);
     premiumToSet = !docs.premium;
 
     const replace = {
-      premium: premiumToSet
+      premium: premiumToSet,
     };
 
-    Account.AccountModel.findOneByOwnerAndUpdate(req.session.account._id,replace, (err, docs)=>{
-      return res.json({new_Premium: docs.premium});
-    });
+    Account.AccountModel.findOneByOwnerAndUpdate(
+      req.session.account._id,
+      replace,
+      (error, returnedVal) => res.json({ new_Premium: returnedVal.premium }),
+    );
   });
-
-
-
 };
 
-//CSRF 
+// CSRF
 const getToken = (request, response) => {
   const req = request;
   const res = response;
@@ -120,11 +119,9 @@ const getToken = (request, response) => {
   res.json(csrfJSON);
 };
 
-//Get the model based on id
+// Get the model based on id
 const getAccountInfo = (req, res) => {
-  Account.AccountModel.findOneByOwner(req.session.account._id, (err, docs)=>{
-    return res.json(docs);
-  });
+  Account.AccountModel.findOneByOwner(req.session.account._id, (err, docs) => res.json(docs));
 };
 
 module.exports.loginPage = loginPage;
