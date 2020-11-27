@@ -2,18 +2,20 @@ const models = require('../models');
 
 const { Deck } = models;
 
-// load viewer page
+const { Account } = models;
+
 const viewerPage = (req, res) => {
-  Deck.DeckModel.findByOwner(req.session.account._id, (err, docs) => {
-    if (err) {
-      console.log(err);
-      return res.status(400).json({ error: 'An error occured' });
-    }
-    const token = req.csrfToken();
-    return res.render('deck-viewer', { decks: docs, csrf: token });
+  Account.AccountModel.findOneByOwner(req.session.account._id, (error, accountDocs) => {
+    Deck.DeckModel.findByOwner(req.session.account._id, (err, docs) => {
+      if (err) {
+        console.log(err);
+        return res.status(400).json({ error: 'An error occured' });
+      }
+      const token = req.csrfToken();
+      return res.render('deck-viewer', { decks: docs, csrf: token, premium: accountDocs.premium });
+    });
   });
 };
-
 
 // Get a list of all the decks saved
 const getDecks = (request, response) => {

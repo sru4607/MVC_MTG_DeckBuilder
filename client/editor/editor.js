@@ -1,5 +1,6 @@
 let workingDeck = [];
-
+var premium = false;
+var filterOpened = false;
 //#region Method Stubs
 
 //Loads all the cards in the deck into a list and renders it
@@ -151,8 +152,123 @@ const searchCard = (e) => {
             <ControlResult card={data}/>,document.querySelector('#searchResultControl')
         );
     }
+    var data = {
+        searchForm: "q="+$("#searchString").val(),
+        colorString: '',
+        typeString: '',
+        costString: '',
+    };
+    if(filterOpened){
+        //Process Colors
+        var colors = {
+            white: $("#white"),
+            blue: $("#blue"),
+            black: $("#black"),
+            red: $("#red"),
+            green: $("#green"),
+            colorless: $("#colorless")
+        }
 
-    sendAjax('GET', $("#searchForm").attr('action'), $("#searchForm").serialize(), displayResult);
+        if(colors.white.is(":checked") || colors.blue.is(":checked") || colors.black.is(":checked") || colors.red.is(":checked") || colors.green.is(":checked") || colors.colorless.is(":checked")){
+            let string = '';
+            if($("#colorSelect").val() == "all"){
+                string = "c=";
+                if(colors.white.is(":checked")){
+                    string+="w";
+                }
+                if(colors.blue.is(":checked")){
+                    string+="u";
+                }
+                if(colors.black.is(":checked")){
+                    string+="b";
+                }
+                if(colors.red.is(":checked")){
+                    string+="r";
+                }
+                if(colors.green.is(":checked")){
+                    string+="g";
+                }
+            }
+
+            if($("#colorSelect").val() == "any"){
+                string = "c";
+                if(colors.white.is(":checked")){
+                    string+=">=w";
+                }
+                if(colors.blue.is(":checked")){
+                    if(string!="c"){
+                        string+="+or+"
+                    }
+                    string+=">=u";
+                }
+                if(colors.black.is(":checked")){
+                    if(string!="c"){
+                        string+="+or+"
+                    }
+                    string+=">=b";
+                }
+                if(colors.red.is(":checked")){
+                    if(string!="c"){
+                        string+="+or+"
+                    }
+                    string+=">=r";
+                }
+                if(colors.green.is(":checked")){
+                    if(string!="c"){
+                        string+="+or+"
+                    }
+                    string+=">=g";
+                }
+            }
+
+            if($("#colorSelect").val() == "only"){
+                string = "c!=";
+                if(!colors.white.is(":checked")){
+                    string+="w";
+                }
+                if(!colors.blue.is(":checked")){
+                    string+="u";
+                }
+                if(!colors.black.is(":checked")){
+                    string+="b";
+                }
+                if(!colors.red.is(":checked")){
+                    string+="r";
+                }
+                if(!colors.green.is(":checked")){
+                    string+="g";
+                }
+            }
+
+            data.colorString = string;
+
+
+        }
+
+        //Process Types
+        if($("#typeSelect").val() != "any"){
+            data.typeString = "t%3A" + $("#typeSelect").val()
+        }
+        //Process Cost
+        if($('#costValue').val() != ""){
+            let toSet = "cmc"+$("#costControl").val()+$("#costValue").val();
+            data.costString = toSet;
+        }
+    }
+
+    var totalString = data.searchForm;
+    if(data.colorString != ''){
+        totalString += "+" + data.colorString;
+    }
+    if(data.typeString != ''){
+        totalString += "+" + data.typeString;
+    }
+    if(data.costString != ''){
+        totalString += "+" + data.costString;
+    }
+
+
+    sendAjax('GET', $("#searchForm").attr('action'), totalString, displayResult);
 
     return false;
 };
@@ -205,16 +321,40 @@ const ControlResult = (data) => {
 
 //JSX for the search Form
 const SearchForm = () => {
-    return(
-        <form id="searchForm" 
-                onSubmit={searchCard}
-                action="/searchCard"
-                method="GET"
-            >
-            <input id="searchString" type="text" name="searchString" placeholder="Search String"/>
-            <input type="submit" value="Search"/>
-        </form>
-    );
+    if(premium){
+        ReactDOM.render(
+            <FilterScreen></FilterScreen>,document.querySelector("#filterEditor")
+        );
+
+        return(
+            <div className="searchDiv">
+                <form id="searchForm" 
+                    onSubmit={searchCard}
+                    action="/searchCard"
+                    method="GET"
+                >
+                    <input id="searchString" type="text" name="searchString" placeholder="Search String"/>
+                    <input type="submit" value="Search"/>
+                </form>
+                <button id="filterButton" onClick={()=>{
+                    $("#filterEditor").show();
+                    filterOpened = true;
+                }}>Filters</button>
+            </div>
+        )
+    }
+    else{
+        return(
+            <form id="searchForm" 
+                    onSubmit={searchCard}
+                    action="/searchCard"
+                    method="GET"
+                >
+                    <input id="searchString" type="text" name="searchString" placeholder="Search String"/>
+                    <input type="submit" value="Search"/>
+            </form>
+        );
+    }
 };
 
 //JSX for the Save Form
@@ -227,6 +367,70 @@ const SaveForm = (props) => {
         </form>
     );
 };
+
+const FilterScreen = () => {
+    return (
+        <div id="filterScreen">
+            <button id="closeFilterScreen" onClick={()=>$("#filterEditor").toggle()}>X</button>
+            <div id="colorFilter">
+                <p>Colors</p>
+                <select id="colorSelect">
+                    <option value="any">Contains One or More</option>
+                    <option value="all">Contains All</option>
+                    <option value="only">Contains Only</option>
+                </select>
+                <div id="colorCheckBoxes">
+                    <div className="color">
+                        <label for="white">White</label>
+                        <input type="checkBox" id="white" name="white" value="white"></input>
+                    </div>
+                    <div className="color">
+                        <label for="blue">Blue</label>
+                        <input type="checkBox" id="blue" name="blue" value="blue"></input>
+                    </div>
+                    <div className="color">
+                        <label for="black">Black</label>
+                        <input type="checkBox" id="black" name="black" value="black"></input>
+                    </div>
+                    <div className="color">
+                        <label for="red">Red</label>
+                        <input type="checkBox" id="red" name="red" value="red"></input>
+                    </div>
+                    <div className="color">
+                        <label for="green">Green</label>
+                        <input type="checkBox" id="green" name="green" value="green"></input>
+                    </div>
+                    <div className="color">
+                        <label for="colorless">Colorless</label>
+                        <input type="checkBox" id="colorless" name="colorless" value="colorless"></input>
+                    </div>
+                </div>
+            </div>
+            <div id="typeFilter">
+                <p>Card Type</p>
+                <select id="typeSelect">
+                    <option value="any">Any</option>
+                    <option value="land">Land</option>
+                    <option value="creature">Creature</option>
+                    <option value="enchantment">Enchantment</option>
+                    <option value="artifact">Artifact</option>
+                    <option value="instant">Instant</option>
+                    <option value="sorcerie">Sorcerie</option>
+                    <option value="placeswalker">Planeswalker</option>
+                </select>
+            </div>
+            <div id="costFilter">
+                <p>Cost</p>
+                <select id="costControl">
+                    <option value="<=">Less or Equal</option>
+                    <option value="=">Equal</option>
+                    <option value=">=">Greater or Equal</option>
+                </select>
+                <input id="costValue" type="number" min="0" max="16" placeholder="cost"></input>
+            </div>
+        </div>
+    )
+}
 
 //#endregion
 //Initial Setup
@@ -248,14 +452,23 @@ const setupEditor = function(csrf){
     }
     renderDeck();
 };
+
+
 //When the token has been recieved call setup
 const getToken = () => {
     sendAjax('GET', '/getToken', null, (result) => {
-        setupEditor(result.csrfToken);
-        //$("#cardHover").hide();
+        //On Token Success Load Account from server and populate the site
+        loadAccountInfoFromServer((data, props)=>{
+            premium = data.premium;
+            setupEditor(props.csrfToken);
+            $("#cardHover").hide();
+        }, result);
 
     });
 };
+
+
+
 //Start the page by getting the token
 $(document).ready(function(){
     getToken();

@@ -3,8 +3,15 @@ const https = require('https');
 const models = require('../models');
 
 const { Deck } = models;
+const { Account } = models;
 
-const editorPage = (req, res) => res.render('deck-editor');
+const editorPage = (req, res) => {
+  Account.AccountModel.findOneByOwner(req.session.account._id, (err, docs) => {
+    console.log(docs);
+    res.render('deck-editor', { premium: docs.premium });
+  });
+};
+
 
 // If creating new deck just open editor
 const newDeck = (req, res) => res.json({ redirect: '/editor' });
@@ -20,7 +27,9 @@ const editDeck = (req, res) => {
 
 // Get card based on search and generate json
 const getCard = (req, res) => {
-  const url = `https://api.scryfall.com/cards/search?q="${req.query.searchString}"`;
+  let searchString = `q=${req.query.q.replace(/ /g, '+')}`;
+  searchString = searchString.replace(':', '%3A');
+  const url = `https://api.scryfall.com/cards/search?${searchString}"`;
   // Create response callback
   const responseRecieved = (resScryfall) => {
     let data = '';
@@ -31,6 +40,7 @@ const getCard = (req, res) => {
     // Use completed data and return it
     resScryfall.on('end', () => {
       const returnedVal = JSON.parse(data);
+      console.log(returnedVal);
       let result = {};
       // If there was any data returned
       if (returnedVal.data) {

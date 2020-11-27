@@ -17,17 +17,20 @@ const togglePremium = () => {
 };
 
 //Loads and renders the saved decks for the user
-const loadAccountInfoFromServer = (csrf) => {
-    sendAjax('GET', '/getAccountInfo', null, (data)=>{
-        ReactDOM.render(
-            <AccountInfo data={data} csrf={csrf}/>,document.querySelector("#accountInfo")
-        );
-    });
+const renderAccountInfo = (data, props) => {
+    ReactDOM.render(
+        <AccountInfo data={data} csrf={props.csrf}/>,document.querySelector("#accountInfo")
+    );
 };
+
+
 
 //All code to be run on initial page setup
 const setup = (csrf) => {
-    loadAccountInfoFromServer(csrf);
+    var props = {
+        csrf: csrf,
+    }
+    loadAccountInfoFromServer(renderAccountInfo, props);
 }
 
 //When the token has been recieved call setup

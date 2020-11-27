@@ -30,7 +30,7 @@ var DeckList = function DeckList(props) {
       className: "logo"
     }), /*#__PURE__*/React.createElement("h3", {
       className: "deckTitle"
-    }, " Title: ", deck.name), /*#__PURE__*/React.createElement("button", {
+    }, " ", deck.name), /*#__PURE__*/React.createElement("button", {
       className: "removeDeck",
       onClick: edit
     }, "Edit"), /*#__PURE__*/React.createElement("button", {
@@ -137,6 +137,12 @@ var redirect = function redirect(response) {
     opacity: '0'
   }, 350);
   window.location = response.redirect;
+};
+
+var loadAccountInfoFromServer = function loadAccountInfoFromServer(callback, props) {
+  sendAjax('GET', '/getAccountInfo', null, function (data) {
+    callback(data, props);
+  });
 }; //AJAX method
 
 

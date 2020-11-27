@@ -1,6 +1,8 @@
 "use strict";
 
-var workingDeck = []; //#region Method Stubs
+var workingDeck = [];
+var premium = false;
+var filterOpened = false; //#region Method Stubs
 //Loads all the cards in the deck into a list and renders it
 
 var getCardsFromServer = function getCardsFromServer() {
@@ -168,7 +170,145 @@ var searchCard = function searchCard(e) {
     }), document.querySelector('#searchResultControl'));
   };
 
-  sendAjax('GET', $("#searchForm").attr('action'), $("#searchForm").serialize(), displayResult);
+  var data = {
+    searchForm: "q=" + $("#searchString").val(),
+    colorString: '',
+    typeString: '',
+    costString: ''
+  };
+
+  if (filterOpened) {
+    //Process Colors
+    var colors = {
+      white: $("#white"),
+      blue: $("#blue"),
+      black: $("#black"),
+      red: $("#red"),
+      green: $("#green"),
+      colorless: $("#colorless")
+    };
+
+    if (colors.white.is(":checked") || colors.blue.is(":checked") || colors.black.is(":checked") || colors.red.is(":checked") || colors.green.is(":checked") || colors.colorless.is(":checked")) {
+      var string = '';
+
+      if ($("#colorSelect").val() == "all") {
+        string = "c=";
+
+        if (colors.white.is(":checked")) {
+          string += "w";
+        }
+
+        if (colors.blue.is(":checked")) {
+          string += "u";
+        }
+
+        if (colors.black.is(":checked")) {
+          string += "b";
+        }
+
+        if (colors.red.is(":checked")) {
+          string += "r";
+        }
+
+        if (colors.green.is(":checked")) {
+          string += "g";
+        }
+      }
+
+      if ($("#colorSelect").val() == "any") {
+        string = "c";
+
+        if (colors.white.is(":checked")) {
+          string += ">=w";
+        }
+
+        if (colors.blue.is(":checked")) {
+          if (string != "c") {
+            string += "+or+";
+          }
+
+          string += ">=u";
+        }
+
+        if (colors.black.is(":checked")) {
+          if (string != "c") {
+            string += "+or+";
+          }
+
+          string += ">=b";
+        }
+
+        if (colors.red.is(":checked")) {
+          if (string != "c") {
+            string += "+or+";
+          }
+
+          string += ">=r";
+        }
+
+        if (colors.green.is(":checked")) {
+          if (string != "c") {
+            string += "+or+";
+          }
+
+          string += ">=g";
+        }
+      }
+
+      if ($("#colorSelect").val() == "only") {
+        string = "c!=";
+
+        if (!colors.white.is(":checked")) {
+          string += "w";
+        }
+
+        if (!colors.blue.is(":checked")) {
+          string += "u";
+        }
+
+        if (!colors.black.is(":checked")) {
+          string += "b";
+        }
+
+        if (!colors.red.is(":checked")) {
+          string += "r";
+        }
+
+        if (!colors.green.is(":checked")) {
+          string += "g";
+        }
+      }
+
+      data.colorString = string;
+    } //Process Types
+
+
+    if ($("#typeSelect").val() != "any") {
+      data.typeString = "t%3A" + $("#typeSelect").val();
+    } //Process Cost
+
+
+    if ($('#costValue').val() != "") {
+      var toSet = "cmc" + $("#costControl").val() + $("#costValue").val();
+      data.costString = toSet;
+    }
+  }
+
+  var totalString = data.searchForm;
+
+  if (data.colorString != '') {
+    totalString += "+" + data.colorString;
+  }
+
+  if (data.typeString != '') {
+    totalString += "+" + data.typeString;
+  }
+
+  if (data.costString != '') {
+    totalString += "+" + data.costString;
+  }
+
+  sendAjax('GET', $("#searchForm").attr('action'), totalString, displayResult);
   return false;
 }; //The renderer for the search result face
 
@@ -229,20 +369,46 @@ var ControlResult = function ControlResult(data) {
 
 
 var SearchForm = function SearchForm() {
-  return /*#__PURE__*/React.createElement("form", {
-    id: "searchForm",
-    onSubmit: searchCard,
-    action: "/searchCard",
-    method: "GET"
-  }, /*#__PURE__*/React.createElement("input", {
-    id: "searchString",
-    type: "text",
-    name: "searchString",
-    placeholder: "Search String"
-  }), /*#__PURE__*/React.createElement("input", {
-    type: "submit",
-    value: "Search"
-  }));
+  if (premium) {
+    ReactDOM.render( /*#__PURE__*/React.createElement(FilterScreen, null), document.querySelector("#filterEditor"));
+    return /*#__PURE__*/React.createElement("div", {
+      className: "searchDiv"
+    }, /*#__PURE__*/React.createElement("form", {
+      id: "searchForm",
+      onSubmit: searchCard,
+      action: "/searchCard",
+      method: "GET"
+    }, /*#__PURE__*/React.createElement("input", {
+      id: "searchString",
+      type: "text",
+      name: "searchString",
+      placeholder: "Search String"
+    }), /*#__PURE__*/React.createElement("input", {
+      type: "submit",
+      value: "Search"
+    })), /*#__PURE__*/React.createElement("button", {
+      id: "filterButton",
+      onClick: function onClick() {
+        $("#filterEditor").show();
+        filterOpened = true;
+      }
+    }, "Filters"));
+  } else {
+    return /*#__PURE__*/React.createElement("form", {
+      id: "searchForm",
+      onSubmit: searchCard,
+      action: "/searchCard",
+      method: "GET"
+    }, /*#__PURE__*/React.createElement("input", {
+      id: "searchString",
+      type: "text",
+      name: "searchString",
+      placeholder: "Search String"
+    }), /*#__PURE__*/React.createElement("input", {
+      type: "submit",
+      value: "Search"
+    }));
+  }
 }; //JSX for the Save Form
 
 
@@ -263,6 +429,119 @@ var SaveForm = function SaveForm(props) {
     type: "submit",
     value: "Save"
   }));
+};
+
+var FilterScreen = function FilterScreen() {
+  return /*#__PURE__*/React.createElement("div", {
+    id: "filterScreen"
+  }, /*#__PURE__*/React.createElement("button", {
+    id: "closeFilterScreen",
+    onClick: function onClick() {
+      return $("#filterEditor").toggle();
+    }
+  }, "X"), /*#__PURE__*/React.createElement("div", {
+    id: "colorFilter"
+  }, /*#__PURE__*/React.createElement("p", null, "Colors"), /*#__PURE__*/React.createElement("select", {
+    id: "colorSelect"
+  }, /*#__PURE__*/React.createElement("option", {
+    value: "any"
+  }, "Contains One or More"), /*#__PURE__*/React.createElement("option", {
+    value: "all"
+  }, "Contains All"), /*#__PURE__*/React.createElement("option", {
+    value: "only"
+  }, "Contains Only")), /*#__PURE__*/React.createElement("div", {
+    id: "colorCheckBoxes"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "color"
+  }, /*#__PURE__*/React.createElement("label", {
+    "for": "white"
+  }, "White"), /*#__PURE__*/React.createElement("input", {
+    type: "checkBox",
+    id: "white",
+    name: "white",
+    value: "white"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "color"
+  }, /*#__PURE__*/React.createElement("label", {
+    "for": "blue"
+  }, "Blue"), /*#__PURE__*/React.createElement("input", {
+    type: "checkBox",
+    id: "blue",
+    name: "blue",
+    value: "blue"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "color"
+  }, /*#__PURE__*/React.createElement("label", {
+    "for": "black"
+  }, "Black"), /*#__PURE__*/React.createElement("input", {
+    type: "checkBox",
+    id: "black",
+    name: "black",
+    value: "black"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "color"
+  }, /*#__PURE__*/React.createElement("label", {
+    "for": "red"
+  }, "Red"), /*#__PURE__*/React.createElement("input", {
+    type: "checkBox",
+    id: "red",
+    name: "red",
+    value: "red"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "color"
+  }, /*#__PURE__*/React.createElement("label", {
+    "for": "green"
+  }, "Green"), /*#__PURE__*/React.createElement("input", {
+    type: "checkBox",
+    id: "green",
+    name: "green",
+    value: "green"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "color"
+  }, /*#__PURE__*/React.createElement("label", {
+    "for": "colorless"
+  }, "Colorless"), /*#__PURE__*/React.createElement("input", {
+    type: "checkBox",
+    id: "colorless",
+    name: "colorless",
+    value: "colorless"
+  })))), /*#__PURE__*/React.createElement("div", {
+    id: "typeFilter"
+  }, /*#__PURE__*/React.createElement("p", null, "Card Type"), /*#__PURE__*/React.createElement("select", {
+    id: "typeSelect"
+  }, /*#__PURE__*/React.createElement("option", {
+    value: "any"
+  }, "Any"), /*#__PURE__*/React.createElement("option", {
+    value: "land"
+  }, "Land"), /*#__PURE__*/React.createElement("option", {
+    value: "creature"
+  }, "Creature"), /*#__PURE__*/React.createElement("option", {
+    value: "enchantment"
+  }, "Enchantment"), /*#__PURE__*/React.createElement("option", {
+    value: "artifact"
+  }, "Artifact"), /*#__PURE__*/React.createElement("option", {
+    value: "instant"
+  }, "Instant"), /*#__PURE__*/React.createElement("option", {
+    value: "sorcerie"
+  }, "Sorcerie"), /*#__PURE__*/React.createElement("option", {
+    value: "placeswalker"
+  }, "Planeswalker"))), /*#__PURE__*/React.createElement("div", {
+    id: "costFilter"
+  }, /*#__PURE__*/React.createElement("p", null, "Cost"), /*#__PURE__*/React.createElement("select", {
+    id: "costControl"
+  }, /*#__PURE__*/React.createElement("option", {
+    value: "<="
+  }, "Less or Equal"), /*#__PURE__*/React.createElement("option", {
+    value: "="
+  }, "Equal"), /*#__PURE__*/React.createElement("option", {
+    value: ">="
+  }, "Greater or Equal")), /*#__PURE__*/React.createElement("input", {
+    id: "costValue",
+    type: "number",
+    min: "0",
+    max: "16",
+    placeholder: "cost"
+  })));
 }; //#endregion
 //Initial Setup
 
@@ -289,7 +568,12 @@ var setupEditor = function setupEditor(csrf) {
 
 var getToken = function getToken() {
   sendAjax('GET', '/getToken', null, function (result) {
-    setupEditor(result.csrfToken); //$("#cardHover").hide();
+    //On Token Success Load Account from server and populate the site
+    loadAccountInfoFromServer(function (data, props) {
+      premium = data.premium;
+      setupEditor(props.csrfToken);
+      $("#cardHover").hide();
+    }, result);
   });
 }; //Start the page by getting the token
 
@@ -325,6 +609,12 @@ var redirect = function redirect(response) {
     opacity: '0'
   }, 350);
   window.location = response.redirect;
+};
+
+var loadAccountInfoFromServer = function loadAccountInfoFromServer(callback, props) {
+  sendAjax('GET', '/getAccountInfo', null, function (data) {
+    callback(data, props);
+  });
 }; //AJAX method
 
 

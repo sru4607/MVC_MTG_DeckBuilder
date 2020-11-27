@@ -16,6 +16,12 @@ const redirect = (response) => {
     window.location = response.redirect;
 };
 
+const loadAccountInfoFromServer = (callback, props) => {
+    sendAjax('GET', '/getAccountInfo', null, (data)=>{
+        callback(data, props);
+    });
+};
+
 //AJAX method
 const sendAjax = (type, action, data, success) => {
     $.ajax({

@@ -27,18 +27,19 @@ var togglePremium = function togglePremium() {
 }; //Loads and renders the saved decks for the user
 
 
-var loadAccountInfoFromServer = function loadAccountInfoFromServer(csrf) {
-  sendAjax('GET', '/getAccountInfo', null, function (data) {
-    ReactDOM.render( /*#__PURE__*/React.createElement(AccountInfo, {
-      data: data,
-      csrf: csrf
-    }), document.querySelector("#accountInfo"));
-  });
+var renderAccountInfo = function renderAccountInfo(data, props) {
+  ReactDOM.render( /*#__PURE__*/React.createElement(AccountInfo, {
+    data: data,
+    csrf: props.csrf
+  }), document.querySelector("#accountInfo"));
 }; //All code to be run on initial page setup
 
 
 var setup = function setup(csrf) {
-  loadAccountInfoFromServer(csrf);
+  var props = {
+    csrf: csrf
+  };
+  loadAccountInfoFromServer(renderAccountInfo, props);
 }; //When the token has been recieved call setup
 
 
@@ -80,6 +81,12 @@ var redirect = function redirect(response) {
     opacity: '0'
   }, 350);
   window.location = response.redirect;
+};
+
+var loadAccountInfoFromServer = function loadAccountInfoFromServer(callback, props) {
+  sendAjax('GET', '/getAccountInfo', null, function (data) {
+    callback(data, props);
+  });
 }; //AJAX method
 
 

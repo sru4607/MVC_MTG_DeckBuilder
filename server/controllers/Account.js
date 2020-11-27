@@ -86,7 +86,12 @@ const signup = (request, response) => {
   });
 };
 
-const accountPage = (req, res) => res.render('account');
+const accountPage = (req, res) => {
+  Account.AccountModel.findOneByOwner(req.session.account._id, (err, docs) => {
+    console.log(docs);
+    res.render('account', { premium: docs.premium });
+  });
+};
 
 // Toggles the premium based on owner
 const togglePremium = (req, res) => {

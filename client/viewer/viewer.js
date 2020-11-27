@@ -14,7 +14,7 @@ const DeckList = (props) => {
         return(
             <div key={deck._id} className="deck">
                 <img src="/assets/img/logo.png" alt="MTG Logo" className="logo"/>
-                <h3 className="deckTitle"> Title: {deck.name}</h3>
+                <h3 className="deckTitle"> {deck.name}</h3>
                 <button className="removeDeck" onClick={edit}>Edit</button>
                 <button className="removeDeck" onClick={remove}>Remove</button>
             </div>
