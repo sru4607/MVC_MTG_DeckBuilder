@@ -242,16 +242,36 @@ button{
     width: 20%;
 }
 
+.cardItem{
+    display: flex;
+    height: auto;
+    width: 100%;
+    justify-content: center;
+}
+
 .cardButton{
     text-align: center;
-    height: 35px;
+    height: auto;
     margin-top: 5px;
     list-style: none;
     padding: 5px;
     line-height: 1.5em;
     font-weight: bold;
     display: block;
-    width:100%;
+    flex: 1;
+    margin-right: 10px;
+}
+
+.cardRemovalButton{
+    text-align: center;
+    height: 30px;
+    margin: auto;
+    list-style: none;
+    padding: 5px;
+    line-height: 1.5em;
+    font-weight: bold;
+    display: block;
+    width: 35px;
 }
 
 /* width */
@@ -311,5 +331,66 @@ button{
       align-items: center;
       height: 100%;
   }
+
+  #cardHover{
+      background-color: white;
+      width: 350px;
+      height: auto;
+      position: absolute;
+      left: 0px;
+      top: 0px;
+      display: block;   
+  }
+
+  .cardHoverDiv{
+    display: flex;
+    align-items: flex-start;   
+  }
+
+  .cardInfoImage{
+    width: 140px;
+    height: 200px;
+    display: block;
+  }
+  
+  .cardInfoName{
+    color:black;
+    display: block;
+    flex: 1;
+    margin: 0;
+  }
+
+  .cardInfoCost{
+    color:black;
+    display: block;
+    margin: 0;
+    text-align: right;
+  }
+
+  .cardInfoText{
+    color:black;
+    display: block;
+    font-size: 12px;
+  }
+
+  .cardInfoMainText{
+      display: block;
+      flex: 1;
+      padding: 0 5px;
+      width: 240px;
+      height: fit-content;
+  }
+
+  .cardInfoTop{
+      border-bottom: 1px solid black;
+      font-weight: bold;
+      padding: 5px 0 3px;
+      display: flex;
+  }
+
+  .cardInfoBottom{
+    margin: 3px 0 15px;
+    display: flex;
+}
   
 

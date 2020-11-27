@@ -15,6 +15,7 @@ const getCardsFromServer = () => {
 
 //Removes a card from the working list
 const removeCardFromList = (index) => {
+    $("#cardHover").hide();
     workingDeck.splice(index,1);
     renderDeck();
 };
@@ -25,10 +26,56 @@ const addCardToList = (card) => {
     renderDeck();
 };
 
+var onCardHover = (e, index) => {
+    console.log(workingDeck[index]);
+    $("#cardHover").show();
+    moveBox(e.target);
+
+    ReactDOM.render(
+        <CardInfoHover card={workingDeck[index]}></CardInfoHover>,document.querySelector("#cardHover")
+    );
+};
+
+var onCardLeave = (index) => {
+    $("#cardHover").hide();
+};
+
+var moveBox = (target) => {
+
+    $(target).bind('mousemove', function(event){
+        var X = $("#cardHover").outerWidth(true);
+        var Y = $("#cardHover").outerHeight(true);
+        var mouseX = event.pageX-X-3;
+        var mouseY = event.pageY-Y-3;
+        
+        if(mouseY < 0){
+            mouseY = event.pageY+3;
+        }
+
+        $("#cardHover").css({
+            'left':mouseX,
+            'top':mouseY
+        });
+    });
+};
+
+var addCardToSearch = (index) => {
+    var card = {
+        result: workingDeck[index]
+    }
+    RenderNextFace(card, 0);
+    ReactDOM.render(
+        <ControlResult card={card}/>,document.querySelector('#searchResultControl')
+    );
+}
+
 //Render the Deck based on the card nodes
 const WorkingDeck = (props) => {
     const cardNodes = props.deck.map((card, index)=>
-        <button myCustomAttribute="testing" className="cardButton" onClick={()=>removeCardFromList(index)}>{card.faceInfo[0].face_name}</button>
+        <div className="cardItem">
+            <button className="cardButton" onClick={()=>addCardToSearch(index)} onMouseEnter={(e)=>onCardHover(e, index)} onMouseLeave={()=>onCardLeave()}>{card.faceInfo[0].face_name}</button>
+            <button className="cardRemovalButton" onClick={()=>removeCardFromList(index)}>X</button>
+        </div>
     );
     return(
         <div>
@@ -37,6 +84,25 @@ const WorkingDeck = (props) => {
                 {cardNodes}
             </div>
         </div>
+    );
+}
+
+const CardInfoHover = (props) => {
+    var toUse = props.card.faceInfo[0];
+    return (
+        <div className="cardHoverDiv">
+            <img src={toUse.face_image} className="cardInfoImage"></img>
+            <div className="cardInfoMainText">
+                <div className="cardInfoTop">
+                    <p className="cardInfoName">{toUse.face_name}</p>
+                    <p className="cardInfoCost">{toUse.face_manaCost}</p>
+                </div>
+                <div className="cardInfoBottom">
+                    <p className="cardInfoText">{toUse.face_text}</p>
+                </div>
+            </div>
+        </div>
+        
     );
 }
 
@@ -186,6 +252,8 @@ const setupEditor = function(csrf){
 const getToken = () => {
     sendAjax('GET', '/getToken', null, (result) => {
         setupEditor(result.csrfToken);
+        //$("#cardHover").hide();
+
     });
 };
 //Start the page by getting the token

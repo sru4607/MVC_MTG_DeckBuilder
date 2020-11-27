@@ -111,6 +111,7 @@ $(document).ready(function () {
 });
 "use strict";
 
+//Handles Errors in a general display
 var handleError = function handleError(message) {
   $(".messageText").text(message);
   $(".messageBox").animate({
@@ -118,7 +119,8 @@ var handleError = function handleError(message) {
   }, 100).delay(2500).animate({
     opacity: 0
   }, 1000);
-};
+}; //Handle Success (WIP)
+
 
 var handleSuccess = function handleSuccess(message) {
   $(".messageText").text(message);
@@ -127,14 +129,16 @@ var handleSuccess = function handleSuccess(message) {
   }, 100).delay(2500).animate({
     opacity: 0
   }, 1000);
-};
+}; //Redirect function with json response
+
 
 var redirect = function redirect(response) {
   $(".messageBox").animate({
     opacity: '0'
   }, 350);
   window.location = response.redirect;
-};
+}; //AJAX method
+
 
 var sendAjax = function sendAjax(type, action, data, success) {
   $.ajax({

@@ -14,6 +14,7 @@ var getCardsFromServer = function getCardsFromServer() {
 
 
 var removeCardFromList = function removeCardFromList(index) {
+  $("#cardHover").hide();
   workingDeck.splice(index, 1);
   renderDeck();
 }; //Adds a card to the working list
@@ -24,18 +25,95 @@ var addCardToList = function addCardToList(card) {
   renderDeck();
 };
 
+var onCardHover = function onCardHover(e, index) {
+  console.log(workingDeck[index]);
+  $("#cardHover").show();
+  moveBox(e.target);
+  ReactDOM.render( /*#__PURE__*/React.createElement(CardInfoHover, {
+    card: workingDeck[index]
+  }), document.querySelector("#cardHover"));
+};
+
+var onCardLeave = function onCardLeave(index) {
+  $("#cardHover").hide();
+};
+
+var moveBox = function moveBox(target) {
+  $(target).bind('mousemove', function (event) {
+    var X = $("#cardHover").outerWidth(true);
+    var Y = $("#cardHover").outerHeight(true);
+    var mouseX = event.pageX - X - 3;
+    var mouseY = event.pageY - Y - 3;
+
+    if (mouseY < 0) {
+      mouseY = event.pageY + 3;
+    }
+
+    $("#cardHover").css({
+      'left': mouseX,
+      'top': mouseY
+    });
+  });
+};
+
+var addCardToSearch = function addCardToSearch(index) {
+  var card = {
+    result: workingDeck[index]
+  };
+  RenderNextFace(card, 0);
+  ReactDOM.render( /*#__PURE__*/React.createElement(ControlResult, {
+    card: card
+  }), document.querySelector('#searchResultControl'));
+}; //Render the Deck based on the card nodes
+
+
 var WorkingDeck = function WorkingDeck(props) {
   var cardNodes = props.deck.map(function (card, index) {
-    return /*#__PURE__*/React.createElement("button", {
-      myCustomAttribute: "testing",
+    return /*#__PURE__*/React.createElement("div", {
+      className: "cardItem"
+    }, /*#__PURE__*/React.createElement("button", {
       className: "cardButton",
+      onClick: function onClick() {
+        return addCardToSearch(index);
+      },
+      onMouseEnter: function onMouseEnter(e) {
+        return onCardHover(e, index);
+      },
+      onMouseLeave: function onMouseLeave() {
+        return onCardLeave();
+      }
+    }, card.faceInfo[0].face_name), /*#__PURE__*/React.createElement("button", {
+      className: "cardRemovalButton",
       onClick: function onClick() {
         return removeCardFromList(index);
       }
-    }, card.faceInfo[0].face_name);
+    }, "X"));
   });
   return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h1", null, "Current Deck"), /*#__PURE__*/React.createElement("div", null, cardNodes));
 };
+
+var CardInfoHover = function CardInfoHover(props) {
+  var toUse = props.card.faceInfo[0];
+  return /*#__PURE__*/React.createElement("div", {
+    className: "cardHoverDiv"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: toUse.face_image,
+    className: "cardInfoImage"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "cardInfoMainText"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "cardInfoTop"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "cardInfoName"
+  }, toUse.face_name), /*#__PURE__*/React.createElement("p", {
+    className: "cardInfoCost"
+  }, toUse.face_manaCost)), /*#__PURE__*/React.createElement("div", {
+    className: "cardInfoBottom"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "cardInfoText"
+  }, toUse.face_text))));
+}; //Renders the working deck by passing the current deck in
+
 
 var renderDeck = function renderDeck() {
   ReactDOM.render( /*#__PURE__*/React.createElement(WorkingDeck, {
@@ -92,7 +170,7 @@ var searchCard = function searchCard(e) {
 
   sendAjax('GET', $("#searchForm").attr('action'), $("#searchForm").serialize(), displayResult);
   return false;
-}; //The renderer for the search result
+}; //The renderer for the search result face
 
 
 var RenderNextFace = function RenderNextFace(card, index) {
@@ -117,7 +195,8 @@ var RenderNextFace = function RenderNextFace(card, index) {
     card: face
   }), document.querySelector('#searchResultCard'));
   $("#searchFace").attr('index', index);
-};
+}; //JSX for the controls for the search result
+
 
 var ControlResult = function ControlResult(data) {
   var cardToUse = data.card.result;
@@ -199,17 +278,18 @@ var setupEditor = function setupEditor(csrf) {
   console.log(urlParams);
 
   if (urlParams.has('deckName')) {
-    $('#saveString').val(urlParams.get('deckName'));
-  } //Get and Render the working deck
+    $('#saveString').val(urlParams.get('deckName')); //Get and Render the working deck
 
+    getCardsFromServer();
+  }
 
-  getCardsFromServer();
+  renderDeck();
 }; //When the token has been recieved call setup
 
 
 var getToken = function getToken() {
   sendAjax('GET', '/getToken', null, function (result) {
-    setupEditor(result.csrfToken);
+    setupEditor(result.csrfToken); //$("#cardHover").hide();
   });
 }; //Start the page by getting the token
 
@@ -219,6 +299,7 @@ $(document).ready(function () {
 });
 "use strict";
 
+//Handles Errors in a general display
 var handleError = function handleError(message) {
   $(".messageText").text(message);
   $(".messageBox").animate({
@@ -226,7 +307,8 @@ var handleError = function handleError(message) {
   }, 100).delay(2500).animate({
     opacity: 0
   }, 1000);
-};
+}; //Handle Success (WIP)
+
 
 var handleSuccess = function handleSuccess(message) {
   $(".messageText").text(message);
@@ -235,14 +317,16 @@ var handleSuccess = function handleSuccess(message) {
   }, 100).delay(2500).animate({
     opacity: 0
   }, 1000);
-};
+}; //Redirect function with json response
+
 
 var redirect = function redirect(response) {
   $(".messageBox").animate({
     opacity: '0'
   }, 350);
   window.location = response.redirect;
-};
+}; //AJAX method
+
 
 var sendAjax = function sendAjax(type, action, data, success) {
   $.ajax({
