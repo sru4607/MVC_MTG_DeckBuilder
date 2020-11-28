@@ -1,7 +1,9 @@
+//Working deck array
 let workingDeck = [];
+//Varaible to be refered to when checking if the account has premium - set on page open
 var premium = false;
+//Variable to be set when opening the filter. Used to short circuit filter checking
 var filterOpened = false;
-//#region Method Stubs
 
 //Loads all the cards in the deck into a list and renders it
 const getCardsFromServer = () => {
@@ -11,8 +13,6 @@ const getCardsFromServer = () => {
     };
     sendAjax('GET','/loadDeck?deckName='+$('#saveString').val(), null, populateWorkindDeck);
 };
-
-
 
 //Removes a card from the working list
 const removeCardFromList = (index) => {
@@ -27,8 +27,8 @@ const addCardToList = (card) => {
     renderDeck();
 };
 
+//When hovering over the card show the display and bind it to the mouse move event.
 var onCardHover = (e, index) => {
-    console.log(workingDeck[index]);
     $("#cardHover").show();
     moveBox(e.target);
 
@@ -37,10 +37,12 @@ var onCardHover = (e, index) => {
     );
 };
 
+//When leaving the card stop showing the display
 var onCardLeave = (index) => {
     $("#cardHover").hide();
 };
 
+//Bind the box to the mouse move event and position it correctly
 var moveBox = (target) => {
 
     $(target).bind('mousemove', function(event){
@@ -60,6 +62,7 @@ var moveBox = (target) => {
     });
 };
 
+//Renders the clicked card into the search field result display
 var addCardToSearch = (index) => {
     var card = {
         result: workingDeck[index]
@@ -88,6 +91,7 @@ const WorkingDeck = (props) => {
     );
 }
 
+//Create the JSX for the hovered card and return it
 const CardInfoHover = (props) => {
     var toUse = props.card.faceInfo[0];
     return (
@@ -127,8 +131,10 @@ const saveListToServer = (e) => {
     }
     let data = $('#saveDeck').serializeArray();
     data.push({name: 'deck', value: JSON.stringify(workingDeck)});
-    console.log(data);
-    sendAjax('POST', '/saveDeck', data, handleSuccess);
+
+    sendAjax('POST', '/saveDeck', data, (e)=>{
+        handleSuccess(e.message);
+    });
 };
 
 //Searches for a card
@@ -169,8 +175,10 @@ const searchCard = (e) => {
             colorless: $("#colorless")
         }
 
+        //If any colors are checked process it
         if(colors.white.is(":checked") || colors.blue.is(":checked") || colors.black.is(":checked") || colors.red.is(":checked") || colors.green.is(":checked") || colors.colorless.is(":checked")){
             let string = '';
+            //If all selected colors must be present
             if($("#colorSelect").val() == "all"){
                 string = "c=";
                 if(colors.white.is(":checked")){
@@ -189,7 +197,7 @@ const searchCard = (e) => {
                     string+="g";
                 }
             }
-
+            //If at least one selected colors must be present
             if($("#colorSelect").val() == "any"){
                 string = "c";
                 if(colors.white.is(":checked")){
@@ -220,7 +228,7 @@ const searchCard = (e) => {
                     string+=">=g";
                 }
             }
-
+            //If only selected colors must be present
             if($("#colorSelect").val() == "only"){
                 string = "c!=";
                 if(!colors.white.is(":checked")){
@@ -255,7 +263,7 @@ const searchCard = (e) => {
             data.costString = toSet;
         }
     }
-
+    //Create the string based on the parameters
     var totalString = data.searchForm;
     if(data.colorString != ''){
         totalString += "+" + data.colorString;
@@ -267,7 +275,7 @@ const searchCard = (e) => {
         totalString += "+" + data.costString;
     }
 
-
+    //Send request
     sendAjax('GET', $("#searchForm").attr('action'), totalString, displayResult);
 
     return false;
@@ -368,6 +376,7 @@ const SaveForm = (props) => {
     );
 };
 
+//JSX for the filter screen
 const FilterScreen = () => {
     return (
         <div id="filterScreen">
@@ -444,7 +453,6 @@ const setupEditor = function(csrf){
         <SaveForm csrf={csrf}/>, document.querySelector("#save")
     );
     const urlParams = new URLSearchParams(window.location.href.split('?',2)[1]);
-    console.log(urlParams);
     if(urlParams.has('deckName')){
         $('#saveString').val(urlParams.get('deckName'));
         //Get and Render the working deck

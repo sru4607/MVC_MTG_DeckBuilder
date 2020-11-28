@@ -43,6 +43,7 @@ AccountSchema.statics.toAPI = (doc) => ({
   _id: doc._id,
 });
 
+// Authenticate password attempt
 const validatePassword = (doc, password, callback) => {
   const pass = doc.password;
 
@@ -54,6 +55,7 @@ const validatePassword = (doc, password, callback) => {
   });
 };
 
+// Get account by username
 AccountSchema.statics.findByUsername = (name, callback) => {
   const search = {
     username: name,
@@ -62,12 +64,15 @@ AccountSchema.statics.findByUsername = (name, callback) => {
   return AccountModel.findOne(search, callback);
 };
 
+// Generate Password Hash
 AccountSchema.statics.generateHash = (password, callback) => {
   const salt = crypto.randomBytes(saltLength);
 
   crypto.pbkdf2(password, salt, iterations, keyLength, 'RSA-SHA512', (err, hash) => callback(salt, hash.toString('hex')));
 };
 
+
+// Authenticate login attempty
 AccountSchema.statics.authenticate = (username, password, callback) => {
   AccountModel.findByUsername(username, (err, doc) => {
     if (err) {
@@ -88,7 +93,7 @@ AccountSchema.statics.authenticate = (username, password, callback) => {
   });
 };
 
-
+// Get account information based on owner id
 AccountSchema.statics.findOneByOwner = (ownerId, callback) => {
   const search = {
     _id: convertId(ownerId),
@@ -96,7 +101,7 @@ AccountSchema.statics.findOneByOwner = (ownerId, callback) => {
   return AccountModel.findOne(search).select('username premium').lean().exec(callback);
 };
 
-
+// Find by owner id and set it to update
 AccountSchema.statics.findOneByOwnerAndUpdate = (ownerId, toUpdateTo, callback) => {
   const search = {
     _id: convertId(ownerId),

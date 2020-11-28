@@ -7,7 +7,6 @@ const { Account } = models;
 
 const editorPage = (req, res) => {
   Account.AccountModel.findOneByOwner(req.session.account._id, (err, docs) => {
-    console.log(docs);
     res.render('deck-editor', { premium: docs.premium });
   });
 };
@@ -40,7 +39,6 @@ const getCard = (req, res) => {
     // Use completed data and return it
     resScryfall.on('end', () => {
       const returnedVal = JSON.parse(data);
-      console.log(returnedVal);
       let result = {};
       // If there was any data returned
       if (returnedVal.data) {
@@ -59,7 +57,6 @@ const getCard = (req, res) => {
           });
         } else {
           // Single Sided Cards
-          console.log(returnedItems);
           result.faceInfo = [{
             face_name: returnedItems.name,
             face_text: returnedItems.oracle_text,
@@ -90,32 +87,28 @@ const getCard = (req, res) => {
 
 // Either update or create new entry based on name and owner
 const saveDeck = (req, res) => {
+  // What to save to
   const deckModelToSave = {
     name: req.body.saveString,
     cards: req.body.deck,
     owner: req.session.account._id,
   };
-
+  // What to search for
   const deckSearch = {
     name: req.body.saveString,
     owner: req.session.account._id,
   };
-
+  // Save based on the search and
   const deckPromise = Deck.DeckModel.findOneAndUpdate(deckSearch, deckModelToSave, {
     new: true,
     upsert: true,
   });
-
-  deckPromise.then((response) => {
-    console.log(response);
+  // When the deck updating is completed return the response
+  deckPromise.then(() => {
     res.json({ message: 'Success' });
   });
 
-
-  deckPromise.catch((err) => {
-    console.log(err);
-    return res.status(400).json({ error: 'An error occured' });
-  });
+  deckPromise.catch(() => res.status(400).json({ error: 'An error occured' }));
 
   return deckPromise;
 };

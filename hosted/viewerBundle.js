@@ -8,11 +8,10 @@ var DeckList = function DeckList(props) {
     }, /*#__PURE__*/React.createElement("h3", {
       className: "emptyDeckList"
     }, "No Decks Saved"));
-  }
+  } //Map the decks to seperate nodes
+
 
   var deckNode = props.decks.map(function (deck) {
-    console.log(props);
-
     var remove = function remove() {
       return deleteDeck(deck, props.csrf);
     };
@@ -40,7 +39,7 @@ var DeckList = function DeckList(props) {
   });
   return /*#__PURE__*/React.createElement("div", {
     className: "deckList"
-  }, /*#__PURE__*/React.createElement("input", {
+  }, /*#__PURE__*/React.createElement("h1", null, "Decks"), /*#__PURE__*/React.createElement("input", {
     id: "editCSRF",
     type: "hidden",
     name: "_csrf",
@@ -113,18 +112,18 @@ $(document).ready(function () {
 
 //Handles Errors in a general display
 var handleError = function handleError(message) {
-  $(".messageText").text(message);
-  $(".messageBox").animate({
+  $("#errorText").text(message);
+  $("#errorMessageBox").animate({
     opacity: 100
   }, 100).delay(2500).animate({
     opacity: 0
   }, 1000);
-}; //Handle Success (WIP)
+}; //Handle Success in a general display
 
 
 var handleSuccess = function handleSuccess(message) {
-  $(".messageText").text(message);
-  $(".messageBox").animate({
+  $("#successText").text(message);
+  $("#successMessageBox").animate({
     opacity: 100
   }, 100).delay(2500).animate({
     opacity: 0
@@ -137,7 +136,8 @@ var redirect = function redirect(response) {
     opacity: '0'
   }, 350);
   window.location = response.redirect;
-};
+}; //Loads the account info from the server and calls the callback function with both the data from the server and props
+
 
 var loadAccountInfoFromServer = function loadAccountInfoFromServer(callback, props) {
   sendAjax('GET', '/getAccountInfo', null, function (data) {

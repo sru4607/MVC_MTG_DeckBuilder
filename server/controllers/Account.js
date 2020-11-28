@@ -43,8 +43,6 @@ const signup = (request, response) => {
   const req = request;
   const res = response;
 
-  console.log(req);
-
   // cast to strings to cover up some security flaws
   req.body.username = `${req.body.username}`;
   req.body.pass = `${req.body.pass}`;
@@ -75,8 +73,6 @@ const signup = (request, response) => {
     });
 
     savePromise.catch((err) => {
-      console.log(err);
-
       if (err.code === 11000) {
         return res.status(400).json({ error: 'Username already in use.' });
       }
@@ -86,9 +82,9 @@ const signup = (request, response) => {
   });
 };
 
+// Process account page request
 const accountPage = (req, res) => {
   Account.AccountModel.findOneByOwner(req.session.account._id, (err, docs) => {
-    console.log(docs);
     res.render('account', { premium: docs.premium });
   });
 };
@@ -97,7 +93,6 @@ const accountPage = (req, res) => {
 const togglePremium = (req, res) => {
   let premiumToSet = false;
   Account.AccountModel.findOneByOwner(req.session.account._id, (err, docs) => {
-    console.log(docs);
     premiumToSet = !docs.premium;
 
     const replace = {
@@ -111,6 +106,49 @@ const togglePremium = (req, res) => {
     );
   });
 };
+
+// Change Password
+const changePassword = (request, response) => {
+  const req = request;
+  const res = response;
+
+  // force cast to string to cover some security flaws
+  const currentPass = `${req.body.c_pass}`;
+  const newPass = `${req.body.pass}`;
+  const pass2 = `${req.body.pass2}`;
+
+  // If any fields are empty
+  if (!currentPass || !newPass || !pass2) {
+    return res.status(400).json({ error: 'All fields are required' });
+  }
+
+  // If the new passwords do not match
+  if (newPass !== pass2) {
+    return res.status(400).json({ error: 'New Passwords do not match' });
+  }
+
+  // Authenticate the correct password
+  return Account.AccountModel.findOneByOwner(req.session.account._id, (mainErr, docs) => {
+    const { username } = docs;
+    Account.AccountModel.authenticate(username, currentPass, (err, account) => {
+      if (err || !account) {
+        return res.status(401).json({ error: 'Wrong password' });
+      }
+      // Set new password and save
+      return Account.AccountModel.generateHash(newPass, (salt, hash) => {
+        Account.AccountModel.findOne({ username: account.username },
+          (AccountErr, updatingAccount) => {
+            const newAccountParam = updatingAccount;
+            newAccountParam.salt = salt;
+            newAccountParam.password = hash;
+            newAccountParam.save();
+            return res.json({ message: 'Success' });
+          });
+      });
+    });
+  });
+};
+
 
 // CSRF
 const getToken = (request, response) => {
@@ -136,4 +174,5 @@ module.exports.login = login;
 module.exports.signup = signup;
 module.exports.getAccountInfo = getAccountInfo;
 module.exports.togglePremium = togglePremium;
+module.exports.changePassword = changePassword;
 module.exports.getToken = getToken;

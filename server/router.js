@@ -18,6 +18,8 @@ const router = (app) => {
   app.get('/loadDeck', mid.requiresLogin, controllers.Editor.loadDeck);
   app.get('/getAccountInfo', mid.requiresLogin, controllers.Account.getAccountInfo);
   app.post('/togglePremium', mid.requiresLogin, controllers.Account.togglePremium);
+  app.post('/changePassword', mid.requiresLogin, controllers.Account.changePassword);
+  app.delete('/removeDeck', mid.requiresLogin, controllers.Viewer.removeDeck);
   app.get('/', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
 };
 

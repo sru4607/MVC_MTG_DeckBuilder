@@ -1,3 +1,5 @@
+//Code from and based on Domo-Makers Assignments
+
 //Processes Login
 const handleLogin = (e) => {
     e.preventDefault();
@@ -9,7 +11,6 @@ const handleLogin = (e) => {
         return false;
     }
 
-    console.log($("input[name=_csrf]").val());
 
     sendAjax('POST', $("#loginForm").attr("action"), $("#loginForm").serialize(), redirect);
 
@@ -31,7 +32,6 @@ const handleSignup = (e) => {
         return false;
     }
     
-    console.log($("input[name=_csrf]").val());
 
     sendAjax('POST', $("#signupForm").attr("action"), $("#signupForm").serialize(), redirect);
 
@@ -46,6 +46,7 @@ const LoginWindow = (props) => {
             method="POST"
             className="mainForm"
         >
+        <h1>Login</h1>
         <input id="user" type="text" name="username" placeholder="username"/>
         <input id="pass" type="password" name="pass" placeholder="password"/>
         <input type="hidden" name="_csrf" value={props.csrf}/>
@@ -63,6 +64,7 @@ const SignupWindow = (props) => {
             method="POST"
             className="mainForm"
         >
+        <h1>Sign-Up</h1>
         <input id="user" type="text" name="username" placeholder="username"/>
         <input id="pass" type="password" name="pass" placeholder="password"/>
         <input id="pass2" type="password" name="pass2" placeholder="retype password"/>
@@ -85,6 +87,7 @@ const createSignupWindow = (csrf) => {
         document.querySelector("#content")
     );
 };
+
 //Passes CSRF 
 const setup = (csrf) => {
     const loginButton = document.querySelector("#loginButton");

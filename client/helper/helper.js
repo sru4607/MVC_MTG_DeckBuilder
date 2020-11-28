@@ -1,13 +1,13 @@
 //Handles Errors in a general display
 const handleError = (message) => {
-    $(".messageText").text(message);
-    $(".messageBox").animate({opacity: 100}, 100).delay(2500).animate({opacity: 0}, 1000);
+    $("#errorText").text(message);
+    $("#errorMessageBox").animate({opacity: 100}, 100).delay(2500).animate({opacity: 0}, 1000);
 };
 
-//Handle Success (WIP)
+//Handle Success in a general display
 const handleSuccess = (message) => {
-    $(".messageText").text(message);
-    $(".messageBox").animate({opacity: 100}, 100).delay(2500).animate({opacity: 0}, 1000);
+    $("#successText").text(message);
+    $("#successMessageBox").animate({opacity: 100}, 100).delay(2500).animate({opacity: 0}, 1000);
 };
 
 //Redirect function with json response
@@ -16,6 +16,7 @@ const redirect = (response) => {
     window.location = response.redirect;
 };
 
+//Loads the account info from the server and calls the callback function with both the data from the server and props
 const loadAccountInfoFromServer = (callback, props) => {
     sendAjax('GET', '/getAccountInfo', null, (data)=>{
         callback(data, props);

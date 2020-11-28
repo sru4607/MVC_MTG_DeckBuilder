@@ -7,8 +7,8 @@ const DeckList = (props) => {
             </div>
         );
     }
+    //Map the decks to seperate nodes
     const deckNode = props.decks.map(function(deck){
-        console.log(props);
         const remove = () => deleteDeck(deck, props.csrf);
         const edit = () => editDeck(deck.name);
         return(
@@ -23,6 +23,7 @@ const DeckList = (props) => {
 
     return(
         <div className="deckList">
+            <h1>Decks</h1>
             <input id="editCSRF" type="hidden" name="_csrf" value={props.csrf}/>
             {deckNode}
         </div>

@@ -1,9 +1,11 @@
 "use strict";
 
-var workingDeck = [];
-var premium = false;
-var filterOpened = false; //#region Method Stubs
-//Loads all the cards in the deck into a list and renders it
+//Working deck array
+var workingDeck = []; //Varaible to be refered to when checking if the account has premium - set on page open
+
+var premium = false; //Variable to be set when opening the filter. Used to short circuit filter checking
+
+var filterOpened = false; //Loads all the cards in the deck into a list and renders it
 
 var getCardsFromServer = function getCardsFromServer() {
   var populateWorkindDeck = function populateWorkindDeck(data) {
@@ -25,20 +27,22 @@ var removeCardFromList = function removeCardFromList(index) {
 var addCardToList = function addCardToList(card) {
   workingDeck.push(card);
   renderDeck();
-};
+}; //When hovering over the card show the display and bind it to the mouse move event.
+
 
 var onCardHover = function onCardHover(e, index) {
-  console.log(workingDeck[index]);
   $("#cardHover").show();
   moveBox(e.target);
   ReactDOM.render( /*#__PURE__*/React.createElement(CardInfoHover, {
     card: workingDeck[index]
   }), document.querySelector("#cardHover"));
-};
+}; //When leaving the card stop showing the display
+
 
 var onCardLeave = function onCardLeave(index) {
   $("#cardHover").hide();
-};
+}; //Bind the box to the mouse move event and position it correctly
+
 
 var moveBox = function moveBox(target) {
   $(target).bind('mousemove', function (event) {
@@ -56,7 +60,8 @@ var moveBox = function moveBox(target) {
       'top': mouseY
     });
   });
-};
+}; //Renders the clicked card into the search field result display
+
 
 var addCardToSearch = function addCardToSearch(index) {
   var card = {
@@ -92,7 +97,8 @@ var WorkingDeck = function WorkingDeck(props) {
     }, "X"));
   });
   return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h1", null, "Current Deck"), /*#__PURE__*/React.createElement("div", null, cardNodes));
-};
+}; //Create the JSX for the hovered card and return it
+
 
 var CardInfoHover = function CardInfoHover(props) {
   var toUse = props.card.faceInfo[0];
@@ -142,8 +148,9 @@ var saveListToServer = function saveListToServer(e) {
     name: 'deck',
     value: JSON.stringify(workingDeck)
   });
-  console.log(data);
-  sendAjax('POST', '/saveDeck', data, handleSuccess);
+  sendAjax('POST', '/saveDeck', data, function (e) {
+    handleSuccess(e.message);
+  });
 }; //Searches for a card
 
 
@@ -186,10 +193,10 @@ var searchCard = function searchCard(e) {
       red: $("#red"),
       green: $("#green"),
       colorless: $("#colorless")
-    };
+    }; //If any colors are checked process it
 
     if (colors.white.is(":checked") || colors.blue.is(":checked") || colors.black.is(":checked") || colors.red.is(":checked") || colors.green.is(":checked") || colors.colorless.is(":checked")) {
-      var string = '';
+      var string = ''; //If all selected colors must be present
 
       if ($("#colorSelect").val() == "all") {
         string = "c=";
@@ -213,7 +220,8 @@ var searchCard = function searchCard(e) {
         if (colors.green.is(":checked")) {
           string += "g";
         }
-      }
+      } //If at least one selected colors must be present
+
 
       if ($("#colorSelect").val() == "any") {
         string = "c";
@@ -253,7 +261,8 @@ var searchCard = function searchCard(e) {
 
           string += ">=g";
         }
-      }
+      } //If only selected colors must be present
+
 
       if ($("#colorSelect").val() == "only") {
         string = "c!=";
@@ -292,7 +301,8 @@ var searchCard = function searchCard(e) {
       var toSet = "cmc" + $("#costControl").val() + $("#costValue").val();
       data.costString = toSet;
     }
-  }
+  } //Create the string based on the parameters
+
 
   var totalString = data.searchForm;
 
@@ -306,7 +316,8 @@ var searchCard = function searchCard(e) {
 
   if (data.costString != '') {
     totalString += "+" + data.costString;
-  }
+  } //Send request
+
 
   sendAjax('GET', $("#searchForm").attr('action'), totalString, displayResult);
   return false;
@@ -429,7 +440,8 @@ var SaveForm = function SaveForm(props) {
     type: "submit",
     value: "Save"
   }));
-};
+}; //JSX for the filter screen
+
 
 var FilterScreen = function FilterScreen() {
   return /*#__PURE__*/React.createElement("div", {
@@ -554,7 +566,6 @@ var setupEditor = function setupEditor(csrf) {
     csrf: csrf
   }), document.querySelector("#save"));
   var urlParams = new URLSearchParams(window.location.href.split('?', 2)[1]);
-  console.log(urlParams);
 
   if (urlParams.has('deckName')) {
     $('#saveString').val(urlParams.get('deckName')); //Get and Render the working deck
@@ -585,18 +596,18 @@ $(document).ready(function () {
 
 //Handles Errors in a general display
 var handleError = function handleError(message) {
-  $(".messageText").text(message);
-  $(".messageBox").animate({
+  $("#errorText").text(message);
+  $("#errorMessageBox").animate({
     opacity: 100
   }, 100).delay(2500).animate({
     opacity: 0
   }, 1000);
-}; //Handle Success (WIP)
+}; //Handle Success in a general display
 
 
 var handleSuccess = function handleSuccess(message) {
-  $(".messageText").text(message);
-  $(".messageBox").animate({
+  $("#successText").text(message);
+  $("#successMessageBox").animate({
     opacity: 100
   }, 100).delay(2500).animate({
     opacity: 0
@@ -609,7 +620,8 @@ var redirect = function redirect(response) {
     opacity: '0'
   }, 350);
   window.location = response.redirect;
-};
+}; //Loads the account info from the server and calls the callback function with both the data from the server and props
+
 
 var loadAccountInfoFromServer = function loadAccountInfoFromServer(callback, props) {
   sendAjax('GET', '/getAccountInfo', null, function (data) {

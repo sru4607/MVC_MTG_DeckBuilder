@@ -1,5 +1,6 @@
 "use strict";
 
+//Code from and based on Domo-Makers Assignments
 //Processes Login
 var handleLogin = function handleLogin(e) {
   e.preventDefault();
@@ -12,7 +13,6 @@ var handleLogin = function handleLogin(e) {
     return false;
   }
 
-  console.log($("input[name=_csrf]").val());
   sendAjax('POST', $("#loginForm").attr("action"), $("#loginForm").serialize(), redirect);
   return false;
 }; //Processes Signup
@@ -34,7 +34,6 @@ var handleSignup = function handleSignup(e) {
     return false;
   }
 
-  console.log($("input[name=_csrf]").val());
   sendAjax('POST', $("#signupForm").attr("action"), $("#signupForm").serialize(), redirect);
   return false;
 }; //JSX for Login
@@ -48,7 +47,7 @@ var LoginWindow = function LoginWindow(props) {
     action: "/login",
     method: "POST",
     className: "mainForm"
-  }, /*#__PURE__*/React.createElement("input", {
+  }, /*#__PURE__*/React.createElement("h1", null, "Login"), /*#__PURE__*/React.createElement("input", {
     id: "user",
     type: "text",
     name: "username",
@@ -78,7 +77,7 @@ var SignupWindow = function SignupWindow(props) {
     action: "/signup",
     method: "POST",
     className: "mainForm"
-  }, /*#__PURE__*/React.createElement("input", {
+  }, /*#__PURE__*/React.createElement("h1", null, "Sign-Up"), /*#__PURE__*/React.createElement("input", {
     id: "user",
     type: "text",
     name: "username",
@@ -149,18 +148,18 @@ $(document).ready(function () {
 
 //Handles Errors in a general display
 var handleError = function handleError(message) {
-  $(".messageText").text(message);
-  $(".messageBox").animate({
+  $("#errorText").text(message);
+  $("#errorMessageBox").animate({
     opacity: 100
   }, 100).delay(2500).animate({
     opacity: 0
   }, 1000);
-}; //Handle Success (WIP)
+}; //Handle Success in a general display
 
 
 var handleSuccess = function handleSuccess(message) {
-  $(".messageText").text(message);
-  $(".messageBox").animate({
+  $("#successText").text(message);
+  $("#successMessageBox").animate({
     opacity: 100
   }, 100).delay(2500).animate({
     opacity: 0
@@ -173,7 +172,8 @@ var redirect = function redirect(response) {
     opacity: '0'
   }, 350);
   window.location = response.redirect;
-};
+}; //Loads the account info from the server and calls the callback function with both the data from the server and props
+
 
 var loadAccountInfoFromServer = function loadAccountInfoFromServer(callback, props) {
   sendAjax('GET', '/getAccountInfo', null, function (data) {

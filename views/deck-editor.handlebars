@@ -32,16 +32,25 @@
     </section>
   </section>
   <section id="cardHover"></section>
-  <div  class="messageBox errorMessage">
-    <img class="errorSymbol" src="/assets/img/error.png" alt="error"/>
-    <p class="messageText"></p>
-  </div>
   <div id="filterEditor"></div>
+  <div  class="messageBox errorMessage" id="errorMessageBox">
+    <img class="errorSymbol" src="/assets/img/error.png" alt="error"/>
+    <p id="errorText"></p>
+  </div>
+  <div  class="messageBox successMessage" id="successMessageBox">
+    <img class="successSymbol" src="/assets/img/check.png" alt="success"/>
+    <p id="successText"></p>
+  </div>
   {{#unless premium}}
   <footer id="footerAd">
-    <img class="horizontalFooterAd" src="/assets/img/Horizontal.png" alt="placeholder ad" />
+    <img class="horizontalFooterAd" src="/assets/img/Horizontal.png" alt="placeholder ad" onclick="hideAd()"/>
   </footer>
   {{/unless}}
+  <script>
+    const hideAd = () => {
+      $(".horizontalFooterAd").hide()
+    }
+  </script>
   <script src="/assets/editorBundle.js"></script>
 </body>
 </html>

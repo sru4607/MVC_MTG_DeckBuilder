@@ -4,14 +4,19 @@ const { Deck } = models;
 
 const { Account } = models;
 
+// Process the viewer page
 const viewerPage = (req, res) => {
+  // Get account information
   Account.AccountModel.findOneByOwner(req.session.account._id, (error, accountDocs) => {
+    // Get decks that the account owns
     Deck.DeckModel.findByOwner(req.session.account._id, (err, docs) => {
+      // If any error
       if (err) {
-        console.log(err);
         return res.status(400).json({ error: 'An error occured' });
       }
+      // Get token
       const token = req.csrfToken();
+      // Render page
       return res.render('deck-viewer', { decks: docs, csrf: token, premium: accountDocs.premium });
     });
   });
@@ -24,7 +29,6 @@ const getDecks = (request, response) => {
 
   return Deck.DeckModel.findByOwner(req.session.account._id, (err, docs) => {
     if (err) {
-      console.log(err);
       return res.status(400).json({ error: 'An error occured' });
     }
 
@@ -38,7 +42,6 @@ const removeDeck = (request, response) => {
   const res = response;
   return Deck.DeckModel.removeByData(req.query, (err, docs) => {
     if (err) {
-      console.log(err);
       return res.status(400).json({ error: 'An error occured' });
     }
     return res.json({ res: docs });

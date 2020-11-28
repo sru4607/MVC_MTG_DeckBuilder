@@ -78,16 +78,18 @@ app.use(session({
     httpOnly: true,
   },
 }));
+
+// Use handlebars
 app.engine('handlebars', expressHandlebars({ defaultLayout: 'main' }));
 app.set('view engine', 'handlebars');
 app.set('views', `${__dirname}/../views`);
 app.disable('x-powered-by');
 app.use(cookieParser());
 
+// C-SURF checking
 app.use(csrf());
 app.use((err, req, res, next) => {
   if (err.code !== 'EBADCSRFTOKEN') {
-    console.log('Nonsense');
     return next(err);
   }
   console.log('Missing CSRF token');
@@ -96,6 +98,7 @@ app.use((err, req, res, next) => {
 
 router(app);
 
+// Listen on port and write to console
 app.listen(port, (err) => {
   if (err) {
     throw err;

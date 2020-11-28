@@ -17,9 +17,13 @@
     <div class="navlink"><a id="signupButton" href="/signup">Sign up</a></div>
   </nav>
   <section id="content" class="verticalCenter"></section>
-  <div  class="messageBox errorMessage">
+  <div  class="messageBox errorMessage" id="errorMessageBox">
     <img class="errorSymbol" src="/assets/img/error.png" alt="error"/>
-    <p class="messageText"></p>
+    <p id="errorText"></p>
+  </div>
+  <div  class="messageBox successMessage" id="successMessageBox">
+    <img class="successSymbol" src="/assets/img/check.png" alt="success"/>
+    <p id="successText"></p>
   </div>
   <script src="/assets/loginBundle.js"></script>
 </body>
