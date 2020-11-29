@@ -85,7 +85,11 @@ const signup = (request, response) => {
 // Process account page request
 const accountPage = (req, res) => {
   Account.AccountModel.findOneByOwner(req.session.account._id, (err, docs) => {
-    res.render('account', { premium: docs.premium });
+    // Should only enter if database was modified (Error Handling)
+    if (err || docs == null) {
+      return logout(req, res);
+    }
+    return res.render('account', { premium: docs.premium });
   });
 };
 

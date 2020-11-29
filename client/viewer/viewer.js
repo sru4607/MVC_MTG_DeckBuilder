@@ -40,7 +40,7 @@ const NewDeckForm = () => {
 //Open the clicked deck in /editor
 const editDeck = (deckToEdit) => {
     let data = {
-        _csrf: $('#editCSRF').val(),
+        _csrf: $('#removeCSRF').val(),
         deckName: deckToEdit,
     };
     sendAjax('POST', '/editDeck', data, redirect)

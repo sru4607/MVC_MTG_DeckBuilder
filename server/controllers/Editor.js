@@ -1,12 +1,17 @@
 const https = require('https');
 
 const models = require('../models');
+const { logout } = require('./Account');
 
 const { Deck } = models;
 const { Account } = models;
 
 const editorPage = (req, res) => {
   Account.AccountModel.findOneByOwner(req.session.account._id, (err, docs) => {
+    // Should only enter if database was modified (Error Handling)
+    if (err || docs == null) {
+      logout(req, res);
+    }
     res.render('deck-editor', { premium: docs.premium });
   });
 };

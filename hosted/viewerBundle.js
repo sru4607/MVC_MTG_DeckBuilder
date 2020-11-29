@@ -57,7 +57,7 @@ var NewDeckForm = function NewDeckForm() {
 
 var editDeck = function editDeck(deckToEdit) {
   var data = {
-    _csrf: $('#editCSRF').val(),
+    _csrf: $('#removeCSRF').val(),
     deckName: deckToEdit
   };
   sendAjax('POST', '/editDeck', data, redirect);

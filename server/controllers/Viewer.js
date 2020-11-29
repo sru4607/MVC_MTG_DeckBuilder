@@ -1,4 +1,5 @@
 const models = require('../models');
+const { logout } = require('./Account');
 
 const { Deck } = models;
 
@@ -7,7 +8,11 @@ const { Account } = models;
 // Process the viewer page
 const viewerPage = (req, res) => {
   // Get account information
-  Account.AccountModel.findOneByOwner(req.session.account._id, (error, accountDocs) => {
+  Account.AccountModel.findOneByOwner(req.session.account._id, (accountError, accountDocs) => {
+    // Should only enter if database was modified (Error Handling)
+    if (accountError || accountDocs == null) {
+      logout(req, res);
+    }
     // Get decks that the account owns
     Deck.DeckModel.findByOwner(req.session.account._id, (err, docs) => {
       // If any error
