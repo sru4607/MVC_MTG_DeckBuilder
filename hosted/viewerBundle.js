@@ -13,7 +13,7 @@ var DeckList = function DeckList(props) {
 
   var deckNode = props.decks.map(function (deck) {
     var remove = function remove() {
-      return deleteDeck(deck, props.csrf);
+      return deleteDeck(deck);
     };
 
     var edit = function edit() {
@@ -40,7 +40,7 @@ var DeckList = function DeckList(props) {
   return /*#__PURE__*/React.createElement("div", {
     className: "deckList"
   }, /*#__PURE__*/React.createElement("h1", null, "Decks"), /*#__PURE__*/React.createElement("input", {
-    id: "editCSRF",
+    id: "removeCSRF",
     type: "hidden",
     name: "_csrf",
     value: props.csrf
@@ -64,11 +64,11 @@ var editDeck = function editDeck(deckToEdit) {
 }; //Deletes a saved deck
 
 
-var deleteDeck = function deleteDeck(deckToDelete, props) {
+var deleteDeck = function deleteDeck(deckToDelete) {
   var url = "/removeDeck";
   url += "/?id=" + deckToDelete._id;
   var toSendProps = {
-    _csrf: props
+    _csrf: $("#removeCSRF").val()
   };
   sendAjax('DELETE', url, toSendProps, function () {
     handleSuccess("Deck Deleted");

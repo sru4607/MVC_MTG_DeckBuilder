@@ -117,7 +117,7 @@ const saveDeck = (req, res) => {
 const loadDeck = (req, res) => {
   Deck.DeckModel.findOneByOwnerAndName(req.session.account._id, req.query.deckName, (err, docs) => {
     if (err) {
-      return res.json({ message: 'Error Saving' });
+      return res.json({ message: 'Error Loading' });
     }
     return res.json({ deck: docs });
   });

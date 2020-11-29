@@ -9,7 +9,7 @@ const DeckList = (props) => {
     }
     //Map the decks to seperate nodes
     const deckNode = props.decks.map(function(deck){
-        const remove = () => deleteDeck(deck, props.csrf);
+        const remove = () => deleteDeck(deck);
         const edit = () => editDeck(deck.name);
         return(
             <div key={deck._id} className="deck">
@@ -24,7 +24,7 @@ const DeckList = (props) => {
     return(
         <div className="deckList">
             <h1>Decks</h1>
-            <input id="editCSRF" type="hidden" name="_csrf" value={props.csrf}/>
+            <input id="removeCSRF" type="hidden" name="_csrf" value={props.csrf}/>
             {deckNode}
         </div>
     );
@@ -47,11 +47,11 @@ const editDeck = (deckToEdit) => {
 };
 
 //Deletes a saved deck
-const deleteDeck = (deckToDelete, props) => {
+const deleteDeck = (deckToDelete) => {
     let url = "/removeDeck";
     url += "/?id=" + deckToDelete._id;
     let toSendProps = {
-        _csrf: props,
+        _csrf: $("#removeCSRF").val(),
     }
     sendAjax('DELETE', url, toSendProps,()=>{
         handleSuccess("Deck Deleted");
